@@ -1,0 +1,5 @@
+# mark source code / text files as text, and
+# always check out source code / text files with lf line endings
+*.txt text eol=lf
+*.md text eol=lf
+*.sh text eol=lf
