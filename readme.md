@@ -1,4 +1,6 @@
-# sharkive
+<!-- sharkive readme -->
+<!-- CC BY-SA 4.0 -->
+![sharkive](./assets/sharkive.svg)
 
 `sharkive` is a shell script to easily upload stuff to the Internet Archive,
 or just download it locally to archive it.
@@ -17,3 +19,9 @@ Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).
 
 - [GPLv3](./license.txt) 
 - [CC BY-SA](https://creativecommons.org/licenses/by-sa/4.0/)
+
+## dependencies
+
+`sharkive` doesn't require any external applications to run,
+but without some core programs you can't do very much.
+Some features are needed for more specific functions.
