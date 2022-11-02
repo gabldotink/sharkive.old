@@ -1,5 +1,5 @@
 <!-- sharkive readme -->
-<!-- CC BY-SA 4.0 -->
+<!-- CC0 Public Domain -->
 ![sharkive](./assets/sharkive.svg)
 
 `sharkive` is a shell script to easily upload stuff to the Internet Archive,
@@ -13,12 +13,8 @@ The script's functions are performed as normal commands, like what you would usu
 into your terminal / command prompt. It aims to be highly customizable, both
 via script editing and command flags.
 
-The source code is licensed under the GNU General Public License 3.0 (GPLv3),
-and prose and images are licensed under
-Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).
-
-- [GPLv3](./license.txt) 
-- [CC BY-SA](https://creativecommons.org/licenses/by-sa/4.0/)
+The software and all other contents of this repository
+are licensed with the [CC0 Public Domain Dedication](./license.md).
 
 ## dependencies
 

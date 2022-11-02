@@ -1,4 +1,4 @@
 # sharkive.sh
-# GPLv3 or later
+# CC0 Public Domain
 #
 # initiate sharkive
