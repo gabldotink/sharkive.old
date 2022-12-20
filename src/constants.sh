@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sharkive | variables.sh
+# sharkive | constants.sh
 # CC0 Public Domain
 #
 #

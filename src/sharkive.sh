@@ -3,4 +3,4 @@
 # CC0 Public Domain
 #
 # import variables
-source "./variables.sh"
+source "./constants.sh"
