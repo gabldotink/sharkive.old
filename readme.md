@@ -3,10 +3,10 @@
 
 ![sharkive](./sharkive.svg)
 
-`sharkive` is a shell script to easily upload stuff to the Internet Archive,
+`sharkive` is a `bash` script to easily upload stuff to the Internet Archive,
 or just download it locally to archive it.
 
-`sharkive`, as a shell script, relies on plugin applications to add functionality to the software.
+`sharkive`, as a `bash` script, relies on plugin applications to add functionality to the software.
 After they're installed, they can be used to download files to your computer or some other device;
 these files can then be uploaded to the Internet Archive to preserve, or you can keep them.
 
@@ -19,6 +19,6 @@ are licensed with the [CC0 Public Domain Dedication](./license.md).
 
 ## dependencies
 
-`sharkive` doesn't require any external applications to run,
-but without some core programs you can't do very much.
+`sharkive` doesn't require any programs except `bash` to run,
+but without some core applications you can't do very much.
 Some features are needed for more specific functions.
