@@ -1,5 +1,6 @@
-<!-- sharkive readme -->
+<!-- sharkive | readme -->
 <!-- CC0 Public Domain -->
+
 ![sharkive](./assets/sharkive.svg)
 
 `sharkive` is a shell script to easily upload stuff to the Internet Archive,
