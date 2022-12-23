@@ -2,17 +2,23 @@
 # sharkive [https://github.com/gabldotink/sharkive/]
 # CC0 Public Domain [https://creativecommons.org/publicdomain/zero/1.0/]
 #
-# note to code readers: this is my first project, so comments are a bit
-# gratuitous on occasion because otherwise I might forget what they do :/
+# this is the Unix version, for Unix and Unix-like systems such as
+# Linux; MacOS; Cygwin; or, like, Solaris or something.
+# a Windows version is, as they say, "in the works."
+# you can still use Cygwin though; in fact, I'm using Cygwin
+# to test this script.
 #
 # sharkive is a bash script to download online content,
 # and optionally upload it to the Internet Archive [https://archive.org].
 
-# unset relevant variables
+# unset variables
+unset method
+unset dl_source
+unset should_upload
 unset flags_present
-unset ia_present
-unset ytdlp_present
-unset ffmpeg_present
+unset ia_exists
+unset ytdlp_exists
+unset ffmpeg_exists
 
 # import config file
 source ./sharkive.config.sh
@@ -30,10 +36,15 @@ usage_short() {
 
 # usage text
 usage() {
-	printf "You're using sharkive; a bash script to download online content,\n"
+	printf "you're using sharkive; a bash script to download online content,\n"
 	printf "and optionally upload it to the Internet Archive.\n"
 	printf "\n"
-	printf ""
+	printf "flags:\n"
+	printf "\t-h\tprint this help message\n"
+	printf "\t-m\tdefine \"method\" for downloading\n"
+	printf "\t-s\tdefine download source (URI)\n"
+	printf "\t\t(use multiple times for multiple sources)\n"
+	printf "\t-u\tupload to the Internet Archive once done\n"
 }
 
 # get flags
@@ -45,11 +56,11 @@ while getopts ':hm:s:u' flag; do
 		;;
 	m) # download method
 		declare -l method="$OPTARG" # store value as lowercase
-		printf "using method %s\n" "$method" >&1
+		printf "using method %s\n" "$method"
 		;;
 	s) # download source
 		dl_source+=("$OPTARG")
-		printf "using source %s\n" "$dl_source" >&1
+		printf "using source %s\n" "${dl_source[*]}"
 		;;
 	u) # upload
 		printf "uploading to the Internet Archive when finished\n"
@@ -72,21 +83,25 @@ fi
 
 # check if programs are installed
 check_commands() {
-	if command -v ia &> /dev/null ; then ia_present='yep' ; fi
-	if command -v yt-dlp &> /dev/null ; then ytdlp_present='yep' ; fi
-	if command -v ffmpeg &> /dev/null ; then ffmpeg_present='yep' ; fi
+	if command -v ia &> /dev/null ; then ia_exists='yep' ; fi
+	if command -v yt-dlp &> /dev/null ; then ytdlp_exists='yep' ; fi
+	if command -v ffmpeg &> /dev/null ; then ffmpeg_exists='yep' ; fi
 }
 
 # archive from youtube
 if [ "$method" == 'youtube' ]; then
 	check_commands
-	if [ "$ytdlp_present" != 'yep' ]; then
-		printf "error: yt-dlp is not installed\n"
-		exit 1
+	if [ "$ytdlp_exists" != 'yep' ]; then
+		printf "error: yt-dlp is not installed.\n" >&2
+		to_exit='yep'
 	fi
-	if [ "$ffmpeg_present" != 'yep' ]; then
-		printf "error: ffmpeg is not installed\n"
-		exit 1
+	if [ "$ffmpeg_exists" != 'yep' ]; then
+		printf "error: ffmpeg is not installed.\n" >&2
+		to_exit='yep'
+	fi
+	if [ "$to_exit" == 'yep' ]; then
+		printf "error: required applications are not installed. exiting\n" >&2
 	fi
 	printf "required applications are installed\n"
+
 fi
