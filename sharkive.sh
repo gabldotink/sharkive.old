@@ -21,7 +21,7 @@ unset ytdlp_exists
 unset ffmpeg_exists
 
 # import config file
-source ./sharkive.config.sh
+source ./sharkive.config.default.sh
 
 # invalid flags message
 flags_invalid() {
@@ -81,27 +81,81 @@ if [ "$flags_present" != 'yep' ]; then
 	exit 1
 fi
 
-# check if programs are installed
+# check if programs are installed. near-ubiquitous commands like
+#   printf and wget are not checked
 check_commands() {
-	if command -v ia &> /dev/null ; then ia_exists='yep' ; fi
-	if command -v yt-dlp &> /dev/null ; then ytdlp_exists='yep' ; fi
-	if command -v ffmpeg &> /dev/null ; then ffmpeg_exists='yep' ; fi
+	if command -v ia &>/dev/null; then ia_exists='yep'; fi
+	if command -v yt-dlp &>/dev/null; then ytdlp_exists='yep'; fi
+	if command -v ffmpeg &>/dev/null; then ffmpeg_exists='yep'; fi
 }
 
 # archive from youtube
 if [ "$method" == 'youtube' ]; then
 	check_commands
 	if [ "$ytdlp_exists" != 'yep' ]; then
-		printf "error: yt-dlp is not installed.\n" >&2
+		printf "error: yt-dlp is not installed\n" >&2
 		to_exit='yep'
 	fi
 	if [ "$ffmpeg_exists" != 'yep' ]; then
-		printf "error: ffmpeg is not installed.\n" >&2
+		printf "error: ffmpeg is not installed\n" >&2
 		to_exit='yep'
 	fi
 	if [ "$to_exit" == 'yep' ]; then
 		printf "error: required applications are not installed. exiting\n" >&2
+		exit 1
 	fi
 	printf "required applications are installed\n"
 
+	if [ "${dl_source[0]}" != '' ]; then
+		# download raw data
+		until yt-dlp "${dl_source[@]}" \
+		--ignore-config --use-extractors youtube \
+		--all-formats --allow-unplayable-formats \
+		--concurrent-fragments "$dl_threads" \
+		--retries "$retries" --fragment-retries "$fragment_retries" \
+		--keep-fragments --abort-on-unavailable-fragment \
+		--write-info-json --clean-info-json --no-continue \
+		--write-subs --write-auto-subs --sub-langs all \
+		--sleep-subtitles 1 --write-description \
+		--write-thumbnail --write-all-thumbnails \
+		--ignore-no-formats-error \
+		--extractor-args "youtube:player_client=all;include_incomplete_formats" \
+		--paths "$dl_location/youtube/%(id)s" \
+		--output "%(id)s.%(format_id)s.%(ext)s"
+		error_retries_two="$error_retries"
+		do if [ "$error_retries" -gt 0 ]; then
+				# these go to stdout because it makes more sense when redirecting
+				printf "unsuccessful download.\n"
+				printf "retrying %s more times\n" "$error_retries"
+				error_retries="$((error_retries-1))"
+			else
+				printf "no more retries. exiting\n"
+				exit 1
+			fi
+		done
+		# now make a bv+ba video with attachments
+		until yt-dlp "${dl_source[@]}" \
+		--ignore-config --use-extractors youtube \
+		--concurrent-fragments "$dl_threads" \
+		--retries "$retries" --fragment-retries "$fragment_retries" \
+		--abort-on-unavailable-fragment \
+		--embed-info-json --clean-info-json --no-continue \
+		--embed-subs --sub-langs all \
+		--sleep-subtitles 1 \
+		--embed-thumbnail \
+		--embed-metadata --embed-chapters --embed-info-json \
+		--extractor-args "youtube:player_client=all" \
+		--paths "$dl_location/youtube/'%(id)s'/full" \
+		--output "'%(title)s.%(id)s.%(ext)s'"
+		do if [ "$error_retries_two" -gt 0 ]; then
+				printf "unsuccessful download.\n"
+				printf "retrying %s more times\n" "$error_retries_two"
+				error_retries_two="$((error_retries_two-1))"
+			else
+				printf "no more retries. exiting\n"
+				exit 1
+			fi
+		done
+	printf "\n\ndownload successful\n"
+	fi
 fi
