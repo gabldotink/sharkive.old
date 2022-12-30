@@ -8,8 +8,8 @@ export dl_threads=2
 export retries=50
 export fragment_retries=50
 
-# maximum retries on total fragment error
-export error_retries=10
+# maximum retries on total yt-dlp failure
+export failure_retries=999
 
 # sharkive downloads location. no trailing slash!
 export dl_location="$HOME/.sharkive/dl"

@@ -106,7 +106,8 @@ if [ "$method" == 'youtube' ]; then
 	fi
 	printf "required applications are installed\n"
 
-	if [ "${dl_source[0]}" != '' ]; then
+	if [ -n "${dl_source[0]}" ]; then
+		failure_retries_two="$failure_retries"
 		# download raw data
 		until yt-dlp "${dl_source[@]}" \
 		--ignore-config --use-extractors youtube \
@@ -114,48 +115,49 @@ if [ "$method" == 'youtube' ]; then
 		--concurrent-fragments "$dl_threads" \
 		--retries "$retries" --fragment-retries "$fragment_retries" \
 		--keep-fragments --abort-on-unavailable-fragment \
+		--get-comments --verbose \
 		--write-info-json --clean-info-json --no-continue \
 		--write-subs --write-auto-subs --sub-langs all \
-		--sleep-subtitles 1 --write-description \
-		--write-thumbnail --write-all-thumbnails \
-		--ignore-no-formats-error \
+		--sleep-subtitles 0 --write-description \
+		--write-thumbnail --write-all-thumbnails --no-overwrites \
+		--ignore-no-formats-error --no-windows-filenames \
 		--extractor-args "youtube:player_client=all;include_incomplete_formats" \
-		--paths "$dl_location/youtube/%(id)s" \
-		--output "%(id)s.%(format_id)s.%(ext)s"
-		error_retries_two="$error_retries"
-		do if [ "$error_retries" -gt 0 ]; then
+		--output "$dl_location/youtube/%(id)s/%(id)s.%(format_id)s.%(ext)s"
+		do if [ "$failure_retries" -gt 0 ]; then
 				# these go to stdout because it makes more sense when redirecting
 				printf "unsuccessful download.\n"
-				printf "retrying %s more times\n" "$error_retries"
-				error_retries="$((error_retries-1))"
+				printf "retrying %s more times\n" "$failure_retries"
+				failure_retries="$((failure_retries-1))"
 			else
 				printf "no more retries. exiting\n"
 				exit 1
 			fi
 		done
+		first_dl_success='yep'
 		# now make a bv+ba video with attachments
-		until yt-dlp "${dl_source[@]}" \
-		--ignore-config --use-extractors youtube \
-		--concurrent-fragments "$dl_threads" \
-		--retries "$retries" --fragment-retries "$fragment_retries" \
-		--abort-on-unavailable-fragment \
-		--embed-info-json --clean-info-json --no-continue \
-		--embed-subs --sub-langs all \
-		--sleep-subtitles 1 \
-		--embed-thumbnail \
-		--embed-metadata --embed-chapters --embed-info-json \
-		--extractor-args "youtube:player_client=all" \
-		--paths "$dl_location/youtube/'%(id)s'/full" \
-		--output "'%(title)s.%(id)s.%(ext)s'"
-		do if [ "$error_retries_two" -gt 0 ]; then
-				printf "unsuccessful download.\n"
-				printf "retrying %s more times\n" "$error_retries_two"
-				error_retries_two="$((error_retries_two-1))"
-			else
-				printf "no more retries. exiting\n"
-				exit 1
-			fi
-		done
-	printf "\n\ndownload successful\n"
+		if [ "$first_dl_success" == 'yep' ]; then
+			until yt-dlp "${dl_source[@]}" \
+			--ignore-config --use-extractors youtube \
+			--concurrent-fragments "$dl_threads" \
+			--retries "$retries" --fragment-retries "$fragment_retries" \
+			--abort-on-unavailable-fragment \
+			--embed-info-json --clean-info-json --no-continue \
+			--embed-subs --sub-langs all --verbose \
+			--sleep-subtitles 0 \
+			--embed-thumbnail --get-comments \
+			--embed-metadata --embed-chapters --embed-info-json \
+			--extractor-args "youtube:player_client=all" --no-windows-filenames \
+			--output "$dl_location/youtube/%(id)s/full/%(title)s.%(id)s.%(ext)s"
+			do if [ "$failure_retries_two" -gt 0 ]; then
+					printf "unsuccessful download.\n"
+					printf "retrying %s more times\n" "$failure_retries_two"
+					failure_retries_two="$((failure_retries_two-1))"
+				else
+					printf "no more retries. exiting\n"
+					exit 1
+				fi
+			done
+		fi
 	fi
+	printf "\n\ndownload successful\n"
 fi
