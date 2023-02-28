@@ -41,7 +41,7 @@ usage() {
 	printf "\n"
 	printf "flags:\n"
 	printf "  -h  print this help message\n"
-	printf "  -m  define “method“ for downloading\n"
+	printf "  -m  define “method” for downloading\n"
 	printf "  -s  define download source (URI)\n"
 	printf "      (use multiple times for multiple sources)\n"
 	printf "  -u  upload to the Internet Archive once download is finished\n"
@@ -49,17 +49,17 @@ usage() {
 
 # get flags
 while getopts ':hm:s:u' flag; do
-	case "$flag" in
+	case "${flag}" in
 	h) # help
 		usage >&2
 		exit 0
 		;;
 	m) # download method
-		declare -l method="$OPTARG" # store value as lowercase
-		printf "using method %s\n" "$method"
+		declare -l method="${OPTARG}" # store value as lowercase
+		printf "using method %s\n" "${method}"
 		;;
 	s) # download source
-		dl_source+=("$OPTARG")
+		dl_source+=("${OPTARG}")
 		printf "using source %s\n" "${dl_source[*]}"
 		;;
 	u) # upload
@@ -76,7 +76,7 @@ while getopts ':hm:s:u' flag; do
 done
 
 # show short usage if no flags are given (this is a very insightful comment)
-if [ "$flags_present" != 'yep' ]; then
+if [ "${flags_present}" != 'yep' ]; then
 	usage_short >&2
 	exit 1
 fi
@@ -89,30 +89,30 @@ check_commands() {
 }
 
 # archive from youtube
-if [ "$method" == 'youtube' ]; then
+if [ "${method}" == 'youtube' ]; then
 	check_commands
-	if [ "$ytdlp_exists" != 'yep' ]; then
+	if [ "${ytdlp_exists}" != 'yep' ]; then
 		printf "error: yt-dlp is not installed\n" >&2
 		to_exit='yep'
 	fi
-	if [ "$ffmpeg_exists" != 'yep' ]; then
+	if [ "${ffmpeg_exists}" != 'yep' ]; then
 		printf "error: ffmpeg is not installed\n" >&2
 		to_exit='yep'
 	fi
-	if [ "$to_exit" == 'yep' ]; then
+	if [ "${to_exit}" == 'yep' ]; then
 		printf "error: required applications are not installed. exiting\n" >&2
 		exit 1
 	fi
 	printf "required applications are installed\n"
 
 	if [ -n "${dl_source[0]}" ]; then
-		failure_retries_two="$failure_retries"
+		declare -i failure_retries_two="${failure_retries}"
 		# download raw data
 		until yt-dlp "${dl_source[@]}" \
 		--ignore-config --use-extractors youtube \
 		--all-formats --allow-unplayable-formats \
-		--concurrent-fragments "$dl_threads" \
-		--retries "$retries" --fragment-retries "$fragment_retries" \
+		--concurrent-fragments "${dl_threads}" \
+		--retries "${retries}" --fragment-retries "${fragment_retries}" \
 		--keep-fragments --abort-on-unavailable-fragment \
 		--get-comments --verbose \
 		--write-info-json --clean-info-json --no-continue \
@@ -121,8 +121,8 @@ if [ "$method" == 'youtube' ]; then
 		--write-thumbnail --write-all-thumbnails --no-overwrites \
 		--ignore-no-formats-error --no-windows-filenames \
 		--extractor-args "youtube:player_client=all;include_incomplete_formats" \
-		--output "$dl_location/youtube/%(id)s/%(id)s.%(format_id)s.%(ext)s"
-		do if [ "$failure_retries" -gt 0 ]; then
+		--output "${dl_location}/youtube/%(id)s/%(id)s.%(format_id)s.%(ext)s"
+		do if [ "${failure_retries}" -gt 0 ]; then
 				# these go to stdout because it makes more sense when redirecting
 				printf "unsuccessful download.\n"
 				printf "retrying %s more times\n" "$failure_retries"
@@ -137,8 +137,8 @@ if [ "$method" == 'youtube' ]; then
 		if [ "$first_dl_success" == 'yep' ]; then
 			until yt-dlp "${dl_source[@]}" \
 			--ignore-config --use-extractors youtube \
-			--concurrent-fragments "$dl_threads" \
-			--retries "$retries" --fragment-retries "$fragment_retries" \
+			--concurrent-fragments "${dl_threads}" \
+			--retries "${retries}" --fragment-retries "${fragment_retries}" \
 			--abort-on-unavailable-fragment \
 			--embed-info-json --clean-info-json --no-continue \
 			--embed-subs --sub-langs all --verbose \
@@ -146,8 +146,8 @@ if [ "$method" == 'youtube' ]; then
 			--embed-thumbnail --get-comments \
 			--embed-metadata --embed-chapters --embed-info-json \
 			--extractor-args "youtube:player_client=all" --no-windows-filenames \
-			--output "$dl_location/youtube/%(id)s/full/%(title)s.%(id)s.%(ext)s"
-			do if [ "$failure_retries_two" -gt 0 ]; then
+			--output "${dl_location}/youtube/%(id)s/full/%(title)s.%(id)s.%(ext)s"
+			do if [ "${failure_retries_two}" -gt 0 ]; then
 					printf "unsuccessful download.\n"
 					printf "retrying %s more times\n" "$failure_retries_two"
 					failure_retries_two="$((failure_retries_two-1))"
