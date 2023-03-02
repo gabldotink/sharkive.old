@@ -47,6 +47,23 @@ usage() {
 	printf "  -u  upload to the Internet Archive once download is finished\n"
 }
 
+# check if programs are installed
+check_commands() {
+	if [ command -v ia &>/dev/null ]; then
+	declare -l ia_exists='yep'; fi
+	#if [ command -v ytarchive &>/dev/null ]; then
+	#declare -l ytarchive_exists='yep'; fi
+	#if [ command -v youtube-dl &>/dev/null ]; then
+	#declare -l ytdl_exists='yep'; fi
+	if [ command -v yt-dlp &>/dev/null ]; then
+	declare -l ytdlp_exists='yep'; fi
+	#if [ command -v you-get &>/dev/null ]; then
+	declare -l youget_exists='yep'; fi
+	if [ command -v ffmpeg &>/dev/null ] \
+	&& [ command -v ffprobe &>/dev/null ]; then
+	declare -l ffmpeg_exists='yep'; fi
+}
+
 # get flags
 while getopts ':hm:s:u' flag; do
 	case "${flag}" in
@@ -80,13 +97,6 @@ if [ "${flags_present}" != 'yep' ]; then
 	usage_short >&2
 	exit 1
 fi
-
-# check if programs are installed
-check_commands() {
-	if command -v ia &>/dev/null; then ia_exists='yep'; fi
-	if command -v yt-dlp &>/dev/null; then ytdlp_exists='yep'; fi
-	if command -v ffmpeg &>/dev/null; then ffmpeg_exists='yep'; fi
-}
 
 # archive from youtube
 if [ "${method}" == 'youtube' ]; then
