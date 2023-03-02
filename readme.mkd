@@ -1,7 +1,7 @@
 <!-- sharkive | readme -->
 <!-- CC0 Public Domain -->
 
-![sharkive](./sharkive.svg)
+![sharkive](./logo.svg)
 
 `sharkive` is a `bash` script to easily upload stuff to the Internet Archive,
 or just download it locally to archive it.
