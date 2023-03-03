@@ -1,0 +1,6 @@
+# sharkive | shellcheckrc
+# CC0 Public Domain
+
+# unicode quotes are intentional
+# https://www.shellcheck.net/wiki/SC1111
+disable=SC1111
