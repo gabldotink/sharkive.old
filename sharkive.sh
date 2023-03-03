@@ -17,7 +17,10 @@ unset dl_source
 unset should_upload
 unset flags_present
 unset ia_exists
+#unset ytarchive_exists
+#unset ytdl_exists
 unset ytdlp_exists
+#unset youget_exists
 unset ffmpeg_exists
 
 # import config file (will change to user config on release)
@@ -58,7 +61,7 @@ check_commands() {
 	if [ command -v yt-dlp &>/dev/null ]; then
 	declare -l ytdlp_exists='yep'; fi
 	#if [ command -v you-get &>/dev/null ]; then
-	declare -l youget_exists='yep'; fi
+	#declare -l youget_exists='yep'; fi
 	if [ command -v ffmpeg &>/dev/null ] \
 	&& [ command -v ffprobe &>/dev/null ]; then
 	declare -l ffmpeg_exists='yep'; fi
