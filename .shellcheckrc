@@ -1,6 +1,10 @@
 # sharkive | shellcheckrc
 # CC0 Public Domain
 
-# unicode quotes are intentional
+# detected carriage returns seem to not actually exist
+# https://www.shellcheck.net/wiki/SC1017
+disable=SC1017
+
+# unicode "curly" quotes are intentional
 # https://www.shellcheck.net/wiki/SC1111
 disable=SC1111
