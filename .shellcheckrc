@@ -8,3 +8,6 @@ disable=SC1017
 # unicode "curly" quotes are intentional
 # https://www.shellcheck.net/wiki/SC1111
 disable=SC1111
+
+# prefer curly brackets for variable references
+enable=require-variable-braces
