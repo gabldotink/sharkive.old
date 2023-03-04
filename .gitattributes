@@ -3,9 +3,10 @@
 #
 # mark source code / text files as text, and
 # always check out source code / text files with lf line endings
-*.txt          text eol=lf
-*.md           text eol=lf
+*.mkd          text eol=lf
 *.sh           text eol=lf
 *.svg          text eol=lf
+*.config*      text eol=lf
 .gitignore     text eol=lf
 .gitattributes text eol=lf
+.shellcheckrc  text eol=lf
