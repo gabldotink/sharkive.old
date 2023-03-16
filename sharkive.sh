@@ -3,10 +3,9 @@
 # CC0 Public Domain [https://creativecommons.org/publicdomain/zero/1.0/]
 #
 # this is the *nix version, for Unix and Unix-like systems such as
-# Linux; MacOS; Cygwin; BSD; or, like, Solaris or something.
+# Linux; MacOS; Cygwin; Termux; BSD; or, like, Solaris or something.
 # a Windows version is, as they say, “in the works.”
-# you can still use Cygwin though; in fact, I'm using Cygwin
-# to test this script.
+# you can still use Cygwin on Windows, though.
 #
 # sharkive is a bash script to download online content,
 # and optionally upload it to the Internet Archive [https://archive.org].
@@ -62,16 +61,16 @@ while getopts ':hm:s:u' flag; do
 		exit 2
 		;;
 	m) # download method
-		declare -l method="${OPTARG}" # store value as lowercase
+		declare -gl method="${OPTARG}" # store value as lowercase
 		printf 'using method %s\n' "${method}"
 		;;
 	s) # download source
-		declare dl_source+=("${OPTARG}")
+		declare -g dl_source+=("${OPTARG}")
 		printf 'using source %s\n' "${dl_source[*]}"
 		;;
 	u) # upload
 		printf 'uploading to the Internet Archive when finished\n'
-		declare -l should_upload='yep'
+		declare -g should_upload='yep'
 		;;
 	*) # invalid flags
 		flags_invalid >&2
@@ -91,18 +90,18 @@ fi
 # check if programs are installed
 check_commands() {
 	if command -v ia &> /dev/null; then
-	declare -l ia_exists='yep'; fi
+	declare -g ia_exists='yep'; fi
 	#if command -v ytarchive &> /dev/null; then
-	#declare -l ytarchive_exists='yep'; fi
+	#declare -g ytarchive_exists='yep'; fi
 	#if command -v youtube-dl &> /dev/null; then
-	#declare -l ytdl_exists='yep'; fi
+	#declare -g ytdl_exists='yep'; fi
 	if command -v yt-dlp &> /dev/null; then
-	declare -l ytdlp_exists='yep'; fi
+	declare -g ytdlp_exists='yep'; fi
 	#if command -v you-get &> /dev/null; then
-	#declare -l youget_exists='yep'; fi
+	#declare -g youget_exists='yep'; fi
 	if command -v ffmpeg &> /dev/null \
 	&& command -v ffprobe &> /dev/null; then
-	declare -l ffmpeg_exists='yep'; fi
+	declare -g ffmpeg_exists='yep'; fi
 }
 
 # archive from youtube
@@ -110,11 +109,11 @@ if [ "${method}" == 'youtube' ]; then
 	check_commands
 	if [ "${ytdlp_exists}" != 'yep' ]; then
 		printf 'error: yt-dlp is not installed\n' >&2
-		to_exit='yep'
+		declare to_exit='yep'
 	fi
 	if [ "${ffmpeg_exists}" != 'yep' ]; then
 		printf 'error: ffmpeg is not installed\n' >&2
-		to_exit='yep'
+		declare to_exit='yep'
 	fi
 	if [ "${to_exit}" == 'yep' ]; then
 		printf 'error: required applications are not installed. exiting\n' >&2
@@ -138,7 +137,7 @@ if [ "${method}" == 'youtube' ]; then
 		--write-thumbnail --write-all-thumbnails --no-overwrites \
 		--ignore-no-formats-error --no-windows-filenames \
 		--extractor-args 'youtube:player_client=all;include_incomplete_formats' \
-		--output "${dl_location}/youtube/%(id)s/%(id)s.%(format_id)s.%(ext)s"
+		--output "${dl_location}/youtube/%(id)s/youtube-%(id)s.f%(format_id)s.%(ext)s"
 		do if [ "${failure_retries}" -gt 0 ]; then
 				# these go to stdout because it makes more sense when redirecting
 				printf 'unsuccessful download.\n'
@@ -149,7 +148,7 @@ if [ "${method}" == 'youtube' ]; then
 				exit 1
 			fi
 		done
-		first_dl_success='yep'
+		declare first_dl_success='yep'
 		# now make a bv+ba video with attachments
 		if [ "$first_dl_success" == 'yep' ]; then
 			until yt-dlp "${dl_source[@]}" \
