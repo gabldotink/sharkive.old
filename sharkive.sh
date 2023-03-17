@@ -22,9 +22,6 @@ unset ytdlp_exists
 #unset youget_exists
 unset ffmpeg_exists
 
-# import config file (will change to user config on release)
-source './sharkive.config.default.sh'
-
 # invalid flags message
 flags_invalid() {
 	printf 'invalid flags given\n'
@@ -127,8 +124,7 @@ if [ "${method}" == 'youtube' ]; then
 		until yt-dlp "${dl_source[@]}" \
 		--ignore-config --use-extractors youtube \
 		--all-formats --allow-unplayable-formats \
-		--concurrent-fragments "${dl_threads}" \
-		--retries "${retries}" --fragment-retries "${fragment_retries}" \
+		--concurrent-fragments 1 \
 		--keep-fragments --abort-on-unavailable-fragment \
 		--get-comments --verbose \
 		--write-info-json --clean-info-json --no-continue \
@@ -137,7 +133,7 @@ if [ "${method}" == 'youtube' ]; then
 		--write-thumbnail --write-all-thumbnails --no-overwrites \
 		--ignore-no-formats-error --no-windows-filenames \
 		--extractor-args 'youtube:player_client=all;include_incomplete_formats' \
-		--output "${dl_location}/youtube/%(id)s/youtube-%(id)s.f%(format_id)s.%(ext)s"
+		--output "${HOME}/youtube/%(id)s/youtube-%(id)s.f%(format_id)s.%(ext)s"
 		do if [ "${failure_retries}" -gt 0 ]; then
 				# these go to stdout because it makes more sense when redirecting
 				printf 'unsuccessful download.\n'
@@ -150,11 +146,10 @@ if [ "${method}" == 'youtube' ]; then
 		done
 		declare first_dl_success='yep'
 		# now make a bv+ba video with attachments
-		if [ "$first_dl_success" == 'yep' ]; then
+		if [ "${first_dl_success}" == 'yep' ]; then
 			until yt-dlp "${dl_source[@]}" \
 			--ignore-config --use-extractors youtube \
-			--concurrent-fragments "${dl_threads}" \
-			--retries "${retries}" --fragment-retries "${fragment_retries}" \
+			--concurrent-fragments 1 \
 			--abort-on-unavailable-fragment \
 			--embed-info-json --clean-info-json --no-continue \
 			--embed-subs --sub-langs all --verbose \
@@ -162,7 +157,7 @@ if [ "${method}" == 'youtube' ]; then
 			--embed-thumbnail --get-comments \
 			--embed-metadata --embed-chapters --embed-info-json \
 			--extractor-args 'youtube:player_client=all' --no-windows-filenames \
-			--output "${dl_location}/youtube/%(id)s/full/%(title)s.%(id)s.%(ext)s"
+			--output "${HOME}/youtube/%(id)s/full/%(title)s.%(id)s.%(ext)s"
 			do if [ "${failure_retries_two}" -gt 0 ]; then
 					printf 'unsuccessful download.\n'
 					printf 'retrying %s more times\n' "$failure_retries_two"
