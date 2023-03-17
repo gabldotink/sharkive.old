@@ -10,18 +10,6 @@
 # sharkive is a bash script to download online content,
 # and optionally upload it to the Internet Archive [https://archive.org].
 
-# unset variables
-unset method
-unset dl_source
-unset should_upload
-unset flags_present
-unset ia_exists
-#unset ytarchive_exists
-#unset ytdl_exists
-unset ytdlp_exists
-#unset youget_exists
-unset ffmpeg_exists
-
 # invalid flags message
 flags_invalid() {
 	printf 'invalid flags given\n'
