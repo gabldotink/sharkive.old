@@ -90,23 +90,23 @@ check_commands() {
 }
 
 # archive from youtube
-if [ "${method}" == 'youtube' ]; then
+if [[ "${method}" == 'youtube' ]]; then
 	check_commands
-	if [ "${ytdlp_exists}" != 'yep' ]; then
+	if [[ "${ytdlp_exists}" != 'yep' ]]; then
 		printf 'error: yt-dlp is not installed\n' >&2
 		declare to_exit='yep'
 	fi
-	if [ "${ffmpeg_exists}" != 'yep' ]; then
+	if [[ "${ffmpeg_exists}" != 'yep' ]]; then
 		printf 'error: ffmpeg is not installed\n' >&2
 		declare to_exit='yep'
 	fi
-	if [ "${to_exit}" == 'yep' ]; then
+	if [[ "${to_exit}" == 'yep' ]]; then
 		printf 'error: required applications are not installed. exiting\n' >&2
 		exit 1
 	fi
 	printf 'required applications are installed\n'
 
-	if [ -n "${dl_source[0]}" ]; then
+	if [[ -n "${dl_source[0]}" ]]; then
 		declare -i failure_retries_two="${failure_retries}"
 		# download raw data
 		until yt-dlp "${dl_source[@]}" \
@@ -122,7 +122,7 @@ if [ "${method}" == 'youtube' ]; then
 		--ignore-no-formats-error --no-windows-filenames \
 		--extractor-args 'youtube:player_client=all;include_incomplete_formats' \
 		--output "${HOME}/youtube/%(id)s/youtube-%(id)s.f%(format_id)s.%(ext)s"
-		do if [ "${failure_retries}" -gt 0 ]; then
+		do if [[ "${failure_retries}" -gt 0 ]]; then
 				# these go to stdout because it makes more sense when redirecting
 				printf 'unsuccessful download.\n'
 				printf 'retrying %s more times\n' "$failure_retries"
@@ -134,7 +134,7 @@ if [ "${method}" == 'youtube' ]; then
 		done
 		declare first_dl_success='yep'
 		# now make a bv+ba video with attachments
-		if [ "${first_dl_success}" == 'yep' ]; then
+		if [[ "${first_dl_success}" == 'yep' ]]; then
 			until yt-dlp "${dl_source[@]}" \
 			--ignore-config --use-extractors youtube \
 			--concurrent-fragments 1 \
@@ -146,7 +146,7 @@ if [ "${method}" == 'youtube' ]; then
 			--embed-metadata --embed-chapters --embed-info-json \
 			--extractor-args 'youtube:player_client=all' --no-windows-filenames \
 			--output "${HOME}/youtube/%(id)s/full/%(title)s.%(id)s.%(ext)s"
-			do if [ "${failure_retries_two}" -gt 0 ]; then
+			do if [[ "${failure_retries_two}" -gt 0 ]]; then
 					printf 'unsuccessful download.\n'
 					printf 'retrying %s more times\n' "$failure_retries_two"
 					failure_retries_two="$((failure_retries_two-1))"
