@@ -1,5 +1,7 @@
-<!-- sharkive | readme -->
-<!-- CC0 Public Domain -->
+<!--
+sharkive | readme.md
+CC0 Public Domain
+-->
 
 ![sharkive](./logo.svg)
 
