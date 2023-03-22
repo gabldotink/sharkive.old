@@ -107,7 +107,6 @@ if [[ "${method}" == 'youtube' ]]; then
 	printf 'required applications are installed\n'
 
 	if [[ -n "${dl_source[0]}" ]]; then
-		declare -i failure_retries_two="${failure_retries}"
 		# download raw data
 		until yt-dlp "${dl_source[@]}" \
 		--ignore-config --use-extractors youtube \
@@ -122,39 +121,22 @@ if [[ "${method}" == 'youtube' ]]; then
 		--ignore-no-formats-error --no-windows-filenames \
 		--extractor-args 'youtube:player_client=all;include_incomplete_formats' \
 		--output "${HOME}/youtube/%(id)s/youtube-%(id)s.f%(format_id)s.%(ext)s"
-		do if [[ "${failure_retries}" -gt 0 ]]; then
-				# these go to stdout because it makes more sense when redirecting
-				printf 'unsuccessful download.\n'
-				printf 'retrying %s more times\n' "$failure_retries"
-				failure_retries="$((failure_retries-1))"
-			else
-				printf 'no more retries. exiting\n'
-				exit 1
-			fi
-		done
-		declare first_dl_success='yep'
+		do printf 'ran into an error, going again\n'; done
+	fi
 		# now make a bv+ba video with attachments
-		if [[ "${first_dl_success}" == 'yep' ]]; then
-			until yt-dlp "${dl_source[@]}" \
-			--ignore-config --use-extractors youtube \
-			--concurrent-fragments 1 \
-			--abort-on-unavailable-fragment \
-			--embed-info-json --clean-info-json --no-continue \
-			--embed-subs --sub-langs all --verbose \
-			--sleep-subtitles 0 \
-			--embed-thumbnail --get-comments \
-			--embed-metadata --embed-chapters --embed-info-json \
-			--extractor-args 'youtube:player_client=all' --no-windows-filenames \
-			--output "${HOME}/youtube/%(id)s/full/%(title)s.%(id)s.%(ext)s"
-			do if [[ "${failure_retries_two}" -gt 0 ]]; then
-					printf 'unsuccessful download.\n'
-					printf 'retrying %s more times\n' "$failure_retries_two"
-					failure_retries_two="$((failure_retries_two-1))"
-				else
-					printf 'no more retries. exiting\n'
-					exit 1
-				fi
-			done
+		until yt-dlp "${dl_source[@]}" \
+		--format bv+ba
+		--ignore-config --use-extractors youtube \
+		--concurrent-fragments 1 \
+		--abort-on-unavailable-fragment \
+		--embed-info-json --clean-info-json --no-continue \
+		--embed-subs --sub-langs all --verbose \
+		--sleep-subtitles 0 \
+		--embed-thumbnail --get-comments \
+		--embed-metadata --embed-chapters --embed-info-json \
+		--extractor-args 'youtube:player_client=all' --no-windows-filenames \
+		--output "${HOME}/youtube/%(id)s/full/%(title)s.%(id)s.%(ext)s"
+			do printf 'ran into an error, going again\n'; done
 		fi
 	fi
 	printf '\n\ndownload successful\n'
