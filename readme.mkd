@@ -5,8 +5,8 @@ CC0 Public Domain
 
 ![sharkive](./logo.svg)
 
-`sharkive` is a `bash` script to easily upload stuff to the Internet Archive,
-or just download it locally to archive it.
+`sharkive` is a `bash` script to make it easier to contribute to the
+[Internet Archive](https://archive.org/).
 
 `sharkive`, as a `bash` script, relies on plugin applications to add functionality to the software.
 After they're installed, they can be used to download files to your computer or some other device;
