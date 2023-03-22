@@ -120,7 +120,7 @@ if [[ "${method}" == 'youtube' ]]; then
 		--write-thumbnail --write-all-thumbnails --no-overwrites \
 		--ignore-no-formats-error --no-windows-filenames --no-restrict-filenames \
 		--extractor-args 'youtube:player_client=all;include_incomplete_formats' \
-		--output "${HOME}/youtube/%(id)s/youtube-%(id)s.%(format_id)s.%(ext)s"
+		--output "${HOME}/youtube/%(id)s/data/youtube-%(id)s.%(format_id)s.%(ext)s"
 		do printf '[info] ran into an error, going again\n'; done
 	fi
 		# now make a bv+ba video with attachments
@@ -135,7 +135,7 @@ if [[ "${method}" == 'youtube' ]]; then
 		--embed-thumbnail --get-comments \
 		--embed-metadata --embed-chapters --embed-info-json \
 		--extractor-args 'youtube:player_client=all' --no-windows-filenames --no-restrict-filenames \
-		--output "${HOME}/youtube/%(id)s/full/%(title)s.%(id)s.%(ext)s"
+		--output "${HOME}/youtube/%(id)s/%(title)s.%(id)s.%(ext)s"
 			do printf '[info] ran into an error, going again\n'; done
 		fi
 	fi
