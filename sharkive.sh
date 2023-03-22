@@ -67,7 +67,7 @@ while getopts ':hm:s:u' flag; do
 done
 
 # show short usage if no flags are given (this is a very insightful comment)
-if [ "${flags_present}" != 'yep' ]; then
+if [[ "${flags_present}" != 'yep' ]]; then
 	usage_short >&2
 	exit 1
 fi
@@ -93,15 +93,15 @@ check_commands() {
 if [[ "${method}" == 'youtube' ]]; then
 	check_commands
 	if [[ "${ytdlp_exists}" != 'yep' ]]; then
-		printf 'error: yt-dlp is not installed\n' >&2
+		printf '[error] yt-dlp is not installed\n' >&2
 		declare to_exit='yep'
 	fi
 	if [[ "${ffmpeg_exists}" != 'yep' ]]; then
-		printf 'error: ffmpeg is not installed\n' >&2
+		printf '[error] ffmpeg is not installed\n' >&2
 		declare to_exit='yep'
 	fi
 	if [[ "${to_exit}" == 'yep' ]]; then
-		printf 'error: required applications are not installed. exiting\n' >&2
+		printf '[error] required applications are not installed. exiting\n' >&2
 		exit 1
 	fi
 	printf 'required applications are installed\n'
@@ -120,8 +120,8 @@ if [[ "${method}" == 'youtube' ]]; then
 		--write-thumbnail --write-all-thumbnails --no-overwrites \
 		--ignore-no-formats-error --no-windows-filenames --no-restrict-filenames \
 		--extractor-args 'youtube:player_client=all;include_incomplete_formats' \
-		--output "${HOME}/youtube/%(id)s/youtube-%(id)s.f%(format_id)s.%(ext)s"
-		do printf 'ran into an error, going again\n'; done
+		--output "${HOME}/youtube/%(id)s/youtube-%(id)s.%(format_id)s.%(ext)s"
+		do printf '[info] ran into an error, going again\n'; done
 	fi
 		# now make a bv+ba video with attachments
 		until yt-dlp "${dl_source[@]}" \
@@ -136,8 +136,8 @@ if [[ "${method}" == 'youtube' ]]; then
 		--embed-metadata --embed-chapters --embed-info-json \
 		--extractor-args 'youtube:player_client=all' --no-windows-filenames --no-restrict-filenames \
 		--output "${HOME}/youtube/%(id)s/full/%(title)s.%(id)s.%(ext)s"
-			do printf 'ran into an error, going again\n'; done
+			do printf '[info] ran into an error, going again\n'; done
 		fi
 	fi
-	printf '\n\ndownload successful\n'
+	printf '\n\n[info] download successful\n'
 fi
