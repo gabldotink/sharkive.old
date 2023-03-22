@@ -1,6 +1,1 @@
-# sharkive | .gitattributes
-# CC0 Public Domain
-#
-# mark source code / text files as text, and
-# always check out files with lf line endings
 * text eol=lf

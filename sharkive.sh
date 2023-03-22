@@ -1,29 +1,10 @@
 #!/usr/bin/env bash
-# sharkive [https://github.com/gabldotink/sharkive/]
-# CC0 Public Domain [https://creativecommons.org/publicdomain/zero/1.0/]
-#
-# this is the *nix version, for Unix and Unix-like systems such as
-# Linux; MacOS; Cygwin; Termux; BSD; or, like, Solaris or something.
-# a Windows version is, as they say, “in the works.”
-# you can still use Cygwin on Windows, though.
-#
-# sharkive is a bash script to download online content,
-# and optionally upload it to the Internet Archive [https://archive.org].
-
-# invalid flags message
 flags_invalid() {
-	printf 'invalid flags given\n'
-}
-
-# short usage text
-usage_short() {
-	printf 'one of the flags [-hm] must be used\n'
-	printf 'use ‘sharkive -h’ for detailed help\n'
-}
-
-# usage text
-usage() {
-	cat << 'eof'
+printf 'invalid flags given\n'
+};usage_short() {
+printf 'one of the flags [-hm] must be used\n';printf 'use ‘sharkive -h’ for detailed help\n'
+};usage() {
+cat << 'eof'
 usage: sharkive [-h] [-m method -s source] [-u]
 
 you’re using sharkive; a bash script to download online content,
@@ -36,70 +17,23 @@ flags:
       (use multiple times for multiple sources)
   -u  upload to the Internet Archive once download is finished
 eof
-}
-
-# get flags
-while getopts ':hm:s:u' flag; do
-	case "${flag}" in
-	h) # help
-		usage >&2
-		exit 2
-		;;
-	m) # download method
-		declare -gl method="${OPTARG}" # store value as lowercase
-		printf 'using method %s\n' "${method}"
-		;;
-	s) # download source
-		declare -g dl_source+=("${OPTARG}")
-		printf 'using source %s\n' "${dl_source[*]}"
-		;;
-	u) # upload
-		printf 'uploading to the Internet Archive when finished\n'
-		declare -g should_upload='yep'
-		;;
-	*) # invalid flags
-		flags_invalid >&2
-		usage_short >&2
-		exit 1
-		;;
+};while getopts ':hm:s:u' flag;do case "${flag}" in
+	h)
+		usage >&2;exit 2;;
+	m)
+		declare -gl method="${OPTARG}";printf 'using method %s\n' "${method}";;
+	s)
+		declare -g dl_source+=("${OPTARG}");printf 'using source %s\n' "${dl_source[*]}";;
+	u)
+		printf 'uploading to the Internet Archive when finished\n';declare -g should_upload='yep';;
+	*)
+		flags_invalid>&2;usage_short>&2;exit 1;;
 	esac
 	flags_present='yep'
 done
-
-# show short usage if no flags are given (this is a very insightful comment)
-if [[ "${flags_present}" != 'yep' ]]; then
-	usage_short >&2
-	exit 1
-fi
-
-# check if programs are installed
-check_commands() {
-	if command -v ia &> /dev/null; then
-	declare -g ia_exists='yep'; fi
-	#if command -v ytarchive &> /dev/null; then
-	#declare -g ytarchive_exists='yep'; fi
-	#if command -v youtube-dl &> /dev/null; then
-	#declare -g ytdl_exists='yep'; fi
-	if command -v yt-dlp &> /dev/null; then
-	declare -g ytdlp_exists='yep'; fi
-	#if command -v you-get &> /dev/null; then
-	#declare -g youget_exists='yep'; fi
-	if command -v ffmpeg &> /dev/null \
-	&& command -v ffprobe &> /dev/null; then
-	declare -g ffmpeg_exists='yep'; fi
-}
-
-# archive from youtube
-if [[ "${method}" == 'youtube' ]]; then
-	check_commands
-	if [[ "${ytdlp_exists}" != 'yep' ]]; then
-		printf '[error] yt-dlp is not installed\n' >&2
-		declare to_exit='yep'
-	fi
-	if [[ "${ffmpeg_exists}" != 'yep' ]]; then
-		printf '[error] ffmpeg is not installed\n' >&2
-		declare to_exit='yep'
-	fi
+if [[ "${flags_present}" != 'yep' ]];then usage_short>&2;exit 1;fi;check_commands() {
+if command -v ia&>/dev/null;then declare -g ia_exists='yep';fi;if command -v yt-dlp&>/dev/null;then declare -g ytdlp_exists='yep';fi;if command -v ffmpeg&>/dev/null && command -v ffprobe&>/dev/null;then declare -g ffmpeg_exists='yep';fi
+};if [[ "${method}" == 'youtube' ]];then check_commands;if [[ "${ytdlp_exists}" != 'yep' ]]; then printf '[error] yt-dlp is not installed\n'>&2;declare to_exit='yep';fi;if [[ "${ffmpeg_exists}" != 'yep' ]];then printf '[error] ffmpeg is not installed\n'>&2;declare to_exit='yep';fi
 	if [[ "${to_exit}" == 'yep' ]]; then
 		printf '[error] required applications are not installed. exiting\n' >&2
 		exit 1
