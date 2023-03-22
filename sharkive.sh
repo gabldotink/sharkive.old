@@ -23,7 +23,7 @@ usage_short() {
 
 # usage text
 usage() {
-	cat << 'end'
+	cat << 'eof'
 usage: sharkive [-h] [-m method -s source] [-u]
 
 you’re using sharkive; a bash script to download online content,
@@ -35,7 +35,7 @@ flags:
   -s  define download source (URI)
       (use multiple times for multiple sources)
   -u  upload to the Internet Archive once download is finished
-end
+eof
 }
 
 # get flags
