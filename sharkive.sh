@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-flags_invalid(){ printf 'invalid flags given\n';};usage_short(){ printf 'one of the flags [-hm] must be used\n';printf 'use ‘sharkive -h’ for detailed help\n';};usage(){ cat<<'eof'
+exit_trap(){ printf '[error] exit signal received, ending\n';exit 1;};trap 'exit_trap' SIGKILL SIGINT;flags_invalid(){ printf 'invalid flags given\n';};usage_short(){ printf 'one of the flags [-hm] must be used\n';printf 'use ‘sharkive -h’ for detailed help\n';};usage(){ cat<<'eof'
 usage: sharkive [-h] [-m method -s source] [-u]
 
 you’re using sharkive; a bash script to download online content,
