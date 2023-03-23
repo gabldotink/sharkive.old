@@ -4,7 +4,7 @@ printf 'invalid flags given\n'
 };usage_short(){
 printf 'one of the flags [-hm] must be used\n';printf 'use ‘sharkive -h’ for detailed help\n'
 };usage(){
-cat << 'eof'
+cat<<'eof'
 usage: sharkive [-h] [-m method -s source] [-u]
 
 you’re using sharkive; a bash script to download online content,
@@ -19,7 +19,7 @@ flags:
 eof
 };while getopts ':hm:s:u' flag;do case "${flag}" in
 	h)
-		usage >&2;exit 2;;
+		usage>&2;exit 2;;
 	m)
 		declare -gl method="${OPTARG}";printf 'using method %s\n' "${method}";;
 	s)
