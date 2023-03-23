@@ -63,7 +63,7 @@ while getopts ':hm:s:u' flag; do
 		exit 1
 		;;
 	esac
-	flags_present='yep'
+	declare flags_present='yep'
 done
 
 # show short usage if no flags are given (this is a very insightful comment)
