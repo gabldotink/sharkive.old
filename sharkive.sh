@@ -11,7 +11,7 @@
 # and optionally upload it to the Internet Archive [https://archive.org].
 
 # exit trap
-exit_trap() {
+exit_trap () {
 	printf '[error] exit signal received, ending\n'
 	exit 1
 }
@@ -19,18 +19,18 @@ exit_trap() {
 trap 'exit_trap' SIGKILL SIGINT
 
 # invalid flags message
-flags_invalid() {
+flags_invalid () {
 	printf 'invalid flags given\n'
 }
 
 # short usage text
-usage_short() {
+usage_short () {
 	printf 'one of the flags [-hm] must be used\n'
 	printf 'use ‘sharkive -h’ for detailed help\n'
 }
 
 # usage text
-usage() {
+usage () {
 	cat << 'eof'
 usage: sharkive [-h] [-m method -s source] [-u]
 
@@ -103,7 +103,7 @@ show_actions() {
 show_actions
 
 # check if programs are installed
-check_commands() {
+check_commands () {
 	if command -v ia &> /dev/null; then
 	declare -g ia_exists='yep'; fi
 	#if command -v ytarchive &> /dev/null; then
