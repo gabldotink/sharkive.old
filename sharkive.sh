@@ -10,6 +10,14 @@
 # sharkive is a bash script to download online content,
 # and optionally upload it to the Internet Archive [https://archive.org].
 
+# exit trap
+exit_trap() {
+	printf '[error] exit signal received, ending\n'
+	exit 1
+}
+
+trap 'exit_trap' SIGKILL SIGINT
+
 # invalid flags message
 flags_invalid() {
 	printf 'invalid flags given\n'
@@ -47,14 +55,14 @@ while getopts ':hm:s:u' flag; do
 		;;
 	m) # download method
 		declare -gl method="${OPTARG}" # store value as lowercase
-		printf 'using method %s\n' "${method}"
+		printf '[info] using method %s\n' "${method}"
 		;;
 	s) # download source
 		declare -g dl_source+=("${OPTARG}")
-		printf 'using source %s\n' "${dl_source[*]}"
+		printf '[info] using source %s\n' "${dl_source[*]}"
 		;;
 	u) # upload
-		printf 'uploading to the Internet Archive when finished\n'
+		printf '[info] uploading to the Internet Archive when finished\n'
 		declare -g should_upload='yep'
 		;;
 	*) # invalid flags
@@ -104,7 +112,7 @@ if [[ "${method}" == 'youtube' ]]; then
 		printf '[error] required applications are not installed. exiting\n' >&2
 		exit 1
 	fi
-	printf 'required applications are installed\n'
+	printf '[info] required applications are installed\n'
 
 	if [[ -n "${dl_source[0]}" ]]; then
 		# download raw data
