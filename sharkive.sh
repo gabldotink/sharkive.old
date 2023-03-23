@@ -55,15 +55,12 @@ while getopts ':hm:s:u' flag; do
 		;;
 	m) # download method
 		declare -gl method="${OPTARG}" # store value as lowercase
-		printf '[info] using method %s\n' "${method}"
 		;;
 	s) # download source
-		declare -g dl_source+=("${OPTARG}")
-		printf '[info] using source %s\n' "${dl_source[*]}"
+		declare -g source+=("${OPTARG}")
 		;;
 	u) # upload
-		printf '[info] uploading to the Internet Archive when finished\n'
-		declare -g should_upload='yep'
+		declare -g to_upload='yep'
 		;;
 	*) # invalid flags
 		flags_invalid >&2
@@ -79,6 +76,31 @@ if [[ "${flags_present}" != 'yep' ]]; then
 	usage_short >&2
 	exit 1
 fi
+
+# show user-declared options
+show_actions() {
+	if [[ -n "${method}" ]]; then
+		printf '[info] using method %s\n' "${method}"
+	else
+		printf '[error] no method defined\n'
+		declare -g to_exit='yep'
+	fi
+	if [[ -n "${source}" ]]; then
+		printf '[info] using source %s\n' "${source}"
+	else
+		printf '[error] no source defined\n'
+		declare -g to_exit='yep'
+	fi
+	if [[ "${to_upload}" == 'yep' ]]; then
+		printf '[info] uploading to the Internet Archive when finished\n'
+	fi
+	if [[ "${to_exit}" == 'yep' ]]; then
+		printf '[error] required options are not defined, exiting\n'
+		exit 1
+	fi
+}
+
+show_actions
 
 # check if programs are installed
 check_commands() {
@@ -109,10 +131,9 @@ if [[ "${method}" == 'youtube' ]]; then
 		declare to_exit='yep'
 	fi
 	if [[ "${to_exit}" == 'yep' ]]; then
-		printf '[error] required applications are not installed. exiting\n' >&2
+		printf '[error] required applications are not installed, exiting\n' >&2
 		exit 1
 	fi
-	printf '[info] required applications are installed\n'
 
 	if [[ -n "${dl_source[0]}" ]]; then
 		# download raw data
