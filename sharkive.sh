@@ -144,34 +144,63 @@ if [[ "${method}" == 'youtube' ]]; then
 
 	if [[ -n "${dl_source[0]}" ]]; then
 		# download raw data
-		until yt-dlp "${dl_source[@]}" \
-		--ignore-config --use-extractors youtube \
-		--all-formats --allow-unplayable-formats \
-		--concurrent-fragments 1 \
-		--keep-fragments --abort-on-unavailable-fragment \
-		--get-comments --verbose \
-		--write-info-json --clean-info-json --no-continue \
-		--write-subs --write-auto-subs --sub-langs all \
-		--sleep-subtitles 0 --write-description \
-		--write-thumbnail --write-all-thumbnails --no-overwrites \
-		--ignore-no-formats-error --no-windows-filenames --no-restrict-filenames \
-		--extractor-args 'youtube:player_client=all;include_incomplete_formats' \
-		--output "${HOME}/.sharkive/dl/youtube/%(id)s/data/youtube-%(id)s.%(format_id)s.%(ext)s"
+		until yt-dlp \
+		    --ignore-config \
+		    --use-extractors youtube \
+		    --all-formats \ 
+		    --allow-unplayable-formats \
+		    --concurrent-fragments 1 \
+		    --keep-fragments \ 
+		    --abort-on-unavailable-fragment \
+		    --get-comments \
+		    --verbose \
+		    --write-info-json \
+		    --clean-info-json \
+		    --no-continue \
+		    --write-subs \
+		    --write-auto-subs \
+		    --sub-langs all \
+		    --sleep-subtitles 0 \
+		    --write-description \
+		    --write-thumbnail \
+		    --write-all-thumbnails \
+		    --write-pages \
+		    --no-overwrites \
+		    --ignore-no-formats-error \
+		    --no-windows-filenames \
+		    --no-restrict-filenames \
+		    --extractor-args \
+		     'youtube:player_client=all;include_incomplete_formats' \
+		    --output \
+		     "${HOME}/.sharkive/dl/youtube/%(id)s/data/youtube-%(id)s.%(format_id)s.%(ext)s"
+		    -- "${dl_source[@]}"
 		do printf '[info] ran into an error, going again\n'; done
 	fi
 		# now make a bv+ba video with attachments
-		until yt-dlp "${dl_source[@]}" \
-		--format bv+ba
-		--ignore-config --use-extractors youtube \
-		--concurrent-fragments 1 \
-		--abort-on-unavailable-fragment \
-		--embed-info-json --clean-info-json --no-continue \
-		--embed-subs --sub-langs all --verbose \
-		--sleep-subtitles 0 \
-		--embed-thumbnail --get-comments \
-		--embed-metadata --embed-chapters --embed-info-json \
-		--extractor-args 'youtube:player_client=all' --no-windows-filenames --no-restrict-filenames \
-		--output "${HOME}/.sharkive/dl/youtube/%(id)s/%(title)s.%(id)s.%(ext)s"
+		until yt-dlp \
+		    --format bestvideo*+bestaudio/best \
+		    --ignore-config \
+		    --use-extractors youtube \
+		    --concurrent-fragments 1 \
+		    --abort-on-unavailable-fragment \
+		    --embed-info-json \
+		    --clean-info-json \
+		    --no-continue \
+		    --embed-subs \
+		    --sub-langs all \
+		    --verbose \
+		    --sleep-subtitles 0 \
+		    --embed-thumbnail \
+		    --get-comments \
+		    --embed-metadata \
+		    --embed-chapters \
+		    --embed-info-json \
+		    --extractor-args \
+		     'youtube:player_client=all' \
+		    --no-windows-filenames \
+		    --no-restrict-filenames \
+		    --output \
+		    "${HOME}/.sharkive/dl/youtube/%(id)s/%(title)s.%(id)s.%(ext)s" \
 			do printf '[info] ran into an error, going again\n'; done
 		fi
 	fi
