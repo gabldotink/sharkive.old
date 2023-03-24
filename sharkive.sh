@@ -51,6 +51,7 @@ unset method
 unset source
 unset to_upload
 unset to_exit
+unset flags_present
 
 # get flags
 while getopts ':hm:s:u' flag; do
