@@ -47,6 +47,11 @@ flags:
 eof
 }
 
+unset method
+unset source
+unset to_upload
+unset to_exit
+
 # get flags
 while getopts ':hm:s:u' flag; do
 	case "${flag}" in
