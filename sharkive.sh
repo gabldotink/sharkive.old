@@ -84,7 +84,7 @@ if [[ "${flags_present}" != 'yep' ]]; then
 fi
 
 # show user-declared options
-show_actions() {
+show_options () {
 	if [[ -n "${method}" ]]; then
 		printf '[info] using method %s\n' "${method}"
 	else
