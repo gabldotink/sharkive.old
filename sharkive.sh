@@ -61,13 +61,13 @@ while getopts ':hm:s:u' flag; do
 		exit 2
 		;;
 	m) # download method
-		declare -gl method="${OPTARG}" # store value as lowercase
+		declare -l method="${OPTARG}"
 		;;
 	s) # download source
-		declare -g source+=("${OPTARG}")
+		declare -a source+=("${OPTARG}")
 		;;
 	u) # upload
-		declare -g to_upload='yep'
+		declare to_upload='yep'
 		;;
 	*) # invalid flags
 		flags_invalid >&2
