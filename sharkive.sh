@@ -42,7 +42,8 @@ flags:
   -m  define “method” for downloading
   -s  define download source (URI)
       (use multiple times for multiple sources)
-  -u  upload to the Internet Archive once download is finished
+  -u  upload to the Internet Archive
+      once download is finished
 eof
 }
 
