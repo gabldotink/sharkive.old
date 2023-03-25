@@ -107,7 +107,7 @@ show_options () {
 	fi
 }
 
-show_actions
+show_options
 
 # check if programs are installed
 check_commands () {
