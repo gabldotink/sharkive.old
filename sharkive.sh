@@ -16,7 +16,7 @@ exit_trap () {
 	exit 1
 }
 
-trap 'exit_trap' SIGKILL SIGINT
+trap 'exit_trap' SIGINT
 
 # invalid flags message
 flags_invalid () {
@@ -147,10 +147,10 @@ if [[ "${method}" == 'youtube' ]]; then
 		until yt-dlp \
 		    --ignore-config \
 		    --use-extractors youtube \
-		    --all-formats \ 
+		    --all-formats \
 		    --allow-unplayable-formats \
 		    --concurrent-fragments 1 \
-		    --keep-fragments \ 
+		    --keep-fragments \
 		    --abort-on-unavailable-fragment \
 		    --get-comments \
 		    --verbose \
@@ -172,7 +172,7 @@ if [[ "${method}" == 'youtube' ]]; then
 		    --extractor-args \
 		     'youtube:player_client=all;include_incomplete_formats' \
 		    --output \
-		     "${HOME}/.sharkive/dl/youtube/%(id)s/data/youtube-%(id)s.%(format_id)s.%(ext)s"
+		     "${HOME}/.sharkive/dl/youtube/%(id)s/data/youtube-%(id)s.%(format_id)s.%(ext)s" \
 		    -- "${dl_source[@]}"
 		do printf '[info] ran into an error, going again\n'; done
 	fi
@@ -200,9 +200,7 @@ if [[ "${method}" == 'youtube' ]]; then
 		    --no-windows-filenames \
 		    --no-restrict-filenames \
 		    --output \
-		    "${HOME}/.sharkive/dl/youtube/%(id)s/%(title)s.%(id)s.%(ext)s" \
+		    "${HOME}/.sharkive/dl/youtube/%(id)s/%(title)s.%(id)s.%(ext)s"
 			do printf '[info] ran into an error, going again\n'; done
 		fi
-	fi
 	printf '\n\n[info] download successful\n'
-fi
