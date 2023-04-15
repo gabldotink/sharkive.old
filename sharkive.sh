@@ -47,6 +47,7 @@ options:
 eof
 }
 
+# unset variables that may not be re-set later
 unset method
 unset source
 unset to_upload
@@ -144,6 +145,7 @@ if [[ "${method}" == 'youtube' ]]; then
 
     if [[ -n "${dl_source}" ]]; then
         # download raw data
+        printf '[info] downloading %s\n' "${dl_source}"
         until yt-dlp \
             --abort-on-unavailable-fragment \
             --allow-unplayable-formats \
@@ -235,6 +237,12 @@ if [[ "${method}" == 'youtube' ]]; then
             --youtube-print-sig-code \
             -- "${dl_source}"
         do printf '[info] ran into an error, going again\n'; done
+        declare -g dl_done='yep'
     fi
-    printf '\n\n[info] download successful\n'
+    if [[ "${dl_done}" == 'yep' ]]; then
+        printf '\n\n[info] download successful\n'
+    else
+        printf '\n\n[error] download failed\n'
+        exit 1
+    fi
 fi
