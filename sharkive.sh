@@ -18,14 +18,14 @@ exit_trap () {
 
 trap 'exit_trap' SIGINT
 
-# invalid flags message
-flags_invalid () {
-    printf 'invalid flags given\n'
+# invalid options message
+opts_invalid () {
+    printf 'invalid options given\n'
 }
 
 # short usage text
 usage_short () {
-    printf 'one of the flags [-hm] must be used\n'
+    printf 'one of the options [-hm] must be used\n'
     printf 'use ‘sharkive -h’ for detailed help\n'
 }
 
@@ -37,7 +37,7 @@ usage: sharkive [-h] [-m method -s source] [-u]
 you’re using sharkive; a bash script to download online content,
 and optionally upload it to the Internet Archive.
 
-flags:
+options:
   -h  print this help message
   -m  define “method” for downloading
   -s  define download source (URI)
@@ -51,11 +51,11 @@ unset method
 unset source
 unset to_upload
 unset to_exit
-unset flags_present
+unset opts_present
 
-# get flags
-while getopts ':hm:s:u' flag; do
-    case "${flag}" in
+# get options
+while getopts ':hm:s:u' opt ; do
+    case "${opt}" in
     h) # help
         usage >&2
         exit 2
@@ -69,17 +69,17 @@ while getopts ':hm:s:u' flag; do
     u) # upload
         declare to_upload='yep'
         ;;
-    *) # invalid flags
-        flags_invalid >&2
+    *) # invalid options
+        opts_invalid >&2
         usage_short >&2
         exit 1
         ;;
     esac
-    declare flags_present='yep'
+    declare opts_present='yep'
 done
 
-# show short usage if no flags are given (this is a very insightful comment)
-if [[ "${flags_present}" != 'yep' ]]; then
+# show short usage if no options are given (this is a very insightful comment)
+if [[ "${opts_present}" != 'yep' ]]; then
     usage_short >&2
     exit 1
 fi
@@ -235,7 +235,7 @@ if [[ "${method}" == 'youtube' ]]; then
             --youtube-include-hls-manifest \
             --youtube-print-sig-code \
             -- "${dl_source[@]}"
-        do printf '[info] ran into an error, going again\n'; done
+        do printf '[info] ran into an error, going again\n' ; done
     fi
     printf '\n\n[info] download successful\n'
 fi
