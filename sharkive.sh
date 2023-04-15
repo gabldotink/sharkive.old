@@ -144,7 +144,7 @@ if [[ "${method}" == 'youtube' ]]; then
     fi
 
     # download raw data
-    printf '[info] downloading %s\n' "${dl_source}"
+    printf '[info] downloading %s\n' "${source}"
     until yt-dlp \
         --abort-on-unavailable-fragment \
         --allow-unplayable-formats \
@@ -233,7 +233,7 @@ if [[ "${method}" == 'youtube' ]]; then
         --youtube-include-dash-manifest \
         --youtube-include-hls-manifest \
         --youtube-print-sig-code \
-        -- "${dl_source}" > sharkive.log
+        -- "${source}" > sharkive.log
     do printf '[info] ran into an error, going again\n'; done
     declare -g dl_done='yep'
 
