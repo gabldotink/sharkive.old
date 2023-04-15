@@ -112,34 +112,35 @@ show_options
 
 # check if programs are installed
 check_commands () {
-    if command -v ia &> /dev/null; then
-    declare -g ia_exists='yep'; fi
-    #if command -v ytarchive &> /dev/null; then
+    #if command -v ia &> '/dev/null'; then
+    #declare -g ia_exists='yep'; fi
+    #if command -v ytarchive &> '/dev/null'; then
     #declare -g ytarchive_exists='yep'; fi
-    #if command -v youtube-dl &> /dev/null; then
+    #if command -v youtube-dl &> '/dev/null'; then
     #declare -g ytdl_exists='yep'; fi
-    if command -v yt-dlp &> /dev/null; then
+    if command -v yt-dlp &> '/dev/null'; then
     declare -g ytdlp_exists='yep'; fi
-    #if command -v you-get &> /dev/null; then
+    #if command -v you-get &> '/dev/null'; then
     #declare -g youget_exists='yep'; fi
-    if command -v ffmpeg &> /dev/null \
-    && command -v ffprobe &> /dev/null; then
+    if command -v ffmpeg &> '/dev/null'; then
     declare -g ffmpeg_exists='yep'; fi
+    if command -v ffprobe &> '/dev/null'; then
+    declare -g ffprobe_exists='yep'; fi
 }
 
 # archive from youtube
 if [[ "${method}" == 'youtube' ]]; then
     check_commands
     if [[ "${ytdlp_exists}" != 'yep' ]]; then
-        printf '[error] yt-dlp is not installed\n' >&2
+        printf '[error] yt-dlp is not installed\n'
         declare to_exit='yep'
     fi
     if [[ "${ffmpeg_exists}" != 'yep' ]]; then
-        printf '[error] ffmpeg is not installed\n' >&2
+        printf '[error] ffmpeg is not installed\n'
         declare to_exit='yep'
     fi
     if [[ "${to_exit}" == 'yep' ]]; then
-        printf '[error] required applications are not installed, exiting\n' >&2
+        printf '[error] required applications are not installed, exiting\n'
         exit 1
     fi
 
@@ -235,12 +236,6 @@ if [[ "${method}" == 'youtube' ]]; then
         --youtube-print-sig-code \
         -- "${source}" > sharkive.log
     do printf '[info] ran into an error, going again\n'; done
-    declare -g dl_done='yep'
 
-    if [[ "${dl_done}" == 'yep' ]]; then
-        printf '\n\n[info] download successful\n'
-    else
-        printf '\n\n[error] download failed\n'
-        exit 1
-    fi
+    printf '\ndownload successful'
 fi
