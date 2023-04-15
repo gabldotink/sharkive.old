@@ -64,7 +64,7 @@ while getopts ':hm:s:u' opt; do
         declare -l method="${OPTARG}"
         ;;
     s) # download source
-        declare -a source+=("${OPTARG}")
+        declare source="${OPTARG}"
         ;;
     u) # upload
         declare to_upload='yep'
@@ -142,12 +142,11 @@ if [[ "${method}" == 'youtube' ]]; then
         exit 1
     fi
 
-    if [[ -n "${dl_source[0]}" ]]; then
+    if [[ -n "${dl_source}" ]]; then
         # download raw data
         until yt-dlp \
             --abort-on-unavailable-fragment \
             --allow-unplayable-formats \
-            --clean-info-json \
             --concurrent-fragments 1 \
             --dump-json \
             --dump-pages \
@@ -234,7 +233,7 @@ if [[ "${method}" == 'youtube' ]]; then
             --youtube-include-dash-manifest \
             --youtube-include-hls-manifest \
             --youtube-print-sig-code \
-            -- "${dl_source[@]}"
+            -- "${dl_source}"
         do printf '[info] ran into an error, going again\n'; done
     fi
     printf '\n\n[info] download successful\n'
