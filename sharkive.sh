@@ -148,7 +148,7 @@ if [[ "${method}" == 'youtube' ]]; then
     until yt-dlp \
         --abort-on-unavailable-fragment \
         --allow-unplayable-formats \
-        --concurrent-fragments 1 \
+        --concurrent-fragments '1' \
         --dump-json \
         --dump-pages \
         --dump-single-json \
