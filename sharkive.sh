@@ -54,7 +54,7 @@ unset to_exit
 unset opts_present
 
 # get options
-while getopts ':hm:s:u' opt ; do
+while getopts ':hm:s:u' opt; do
     case "${opt}" in
     h) # help
         usage >&2
@@ -235,7 +235,7 @@ if [[ "${method}" == 'youtube' ]]; then
             --youtube-include-hls-manifest \
             --youtube-print-sig-code \
             -- "${dl_source[@]}"
-        do printf '[info] ran into an error, going again\n' ; done
+        do printf '[info] ran into an error, going again\n'; done
     fi
     printf '\n\n[info] download successful\n'
 fi
