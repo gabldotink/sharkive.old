@@ -4,3 +4,13 @@
 # mark source code / text files as text, and
 # always check out files with lf line endings
 * text eol=lf
+
+# languages for highlighting
+sharkive       linguist-language=Shell
+.editorconfig  linguist-language=EditorConfig
+.gitattributes linguist-language=Git-Attributes
+.gitignore     linguist-language=Git-Ignore
+.shellcheckrc  linguist-language=ShellCheck-Config
+*.mkd          linguist-language=Markdown
+*.sh           linguist-language=Shell
+*.svg          linguist-language=SVG
