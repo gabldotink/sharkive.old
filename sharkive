@@ -16,7 +16,7 @@ exit_trap () {
     exit 1
 }
 
-trap 'exit_trap' SIGINT
+trap 'exit_trap' INT
 
 # invalid options message
 opts_invalid () {
@@ -58,7 +58,7 @@ unset opts_present
 while getopts ':hm:s:u' opt; do
     case "${opt}" in
     h) # help
-        usage >&2
+        usage
         exit 2
         ;;
     m) # download method
@@ -71,8 +71,8 @@ while getopts ':hm:s:u' opt; do
         declare to_upload='yep'
         ;;
     *) # invalid options
-        opts_invalid >&2
-        usage_short >&2
+        opts_invalid
+        usage_short
         exit 1
         ;;
     esac
@@ -81,7 +81,7 @@ done
 
 # show short usage if no options are given (this is a very insightful comment)
 if [[ "${opts_present}" != 'yep' ]]; then
-    usage_short >&2
+    usage_short
     exit 1
 fi
 
@@ -149,7 +149,7 @@ if [[ "${method}" == 'youtube' ]]; then
     until yt-dlp \
         --abort-on-unavailable-fragment \
         --allow-unplayable-formats \
-        --concurrent-fragments '1' \
+        --concurrent-fragments 1 \
         --dump-json \
         --dump-pages \
         --dump-single-json \
@@ -212,9 +212,9 @@ if [[ "${method}" == 'youtube' ]]; then
         --print 'urls' \
         --print-traffic \
         --progress \
-        --sleep-interval '0' \
-        --sleep-requests '0' \
-        --sleep-subtitles '0' \
+        --sleep-interval 0 \
+        --sleep-requests 0 \
+        --sleep-subtitles 0 \
         --sponsorblock-mark '-all' \
         --sponsorblock-remove '-all' \
         --sub-langs 'all' \
@@ -234,8 +234,8 @@ if [[ "${method}" == 'youtube' ]]; then
         --youtube-include-dash-manifest \
         --youtube-include-hls-manifest \
         --youtube-print-sig-code \
-        -- "${source}" > sharkive.log
+        -- "${source}"
     do printf '[info] ran into an error, going again\n'; done
 
-    printf '\ndownload successful'
+    printf '\ndownload successful\n'
 fi
