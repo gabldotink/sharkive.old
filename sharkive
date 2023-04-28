@@ -10,9 +10,16 @@
 # sharkive is a bash script to download online content,
 # and optionally upload it to the Internet Archive [https://archive.org].
 
+# disable POSIX mode
+set +o posix
+unset POSIXLY_CORRECT
+
+# set some more shell attributes
+set -h +B
+
 # exit trap
 exit_trap () {
-    printf '[error] exit signal received, ending\n'
+    printf '[error] SIGINT received, ending\n'
     exit 1
 }
 
@@ -31,7 +38,7 @@ usage_short () {
 
 # usage text
 usage () {
-    cat << 'eof'
+printf '
 usage: sharkive [-h] [-m method -s source] [-u]
 
 you’re using sharkive; a bash script to download online content,
@@ -44,7 +51,7 @@ options:
       (use multiple times for multiple sources)
   -u  upload to the Internet Archive
       once download is finished
-eof
+'
 }
 
 # unset variables that may not be re-set later
@@ -56,16 +63,16 @@ unset opts_present
 
 # get options
 while getopts ':hm:s:u' opt; do
-    case "${opt}" in
+    case "$opt" in
     h) # help
         usage
         exit 2
         ;;
     m) # download method
-        declare -l method="${OPTARG}"
+        declare -l method="$OPTARG"
         ;;
     s) # download source
-        declare source="${OPTARG}"
+        declare source="$OPTARG"
         ;;
     u) # upload
         declare to_upload='yep'
@@ -80,29 +87,29 @@ while getopts ':hm:s:u' opt; do
 done
 
 # show short usage if no options are given (this is a very insightful comment)
-if [[ "${opts_present}" != 'yep' ]]; then
+if [[ "$opts_present" != 'yep' ]]; then
     usage_short
     exit 1
 fi
 
 # show user-declared options
 show_options () {
-    if [[ -n "${method}" ]]; then
-        printf '[info] using method %s\n' "${method}"
+    if [[ -n "$method" ]]; then
+        printf '[info] using method %s\n' "$method"
     else
         printf '[error] no method defined\n'
         declare -g to_exit='yep'
     fi
-    if [[ -n "${source}" ]]; then
-        printf '[info] using source %s\n' "${source}"
+    if [[ -n "$source" ]]; then
+        printf '[info] using source %s\n' "$source"
     else
         printf '[error] no source defined\n'
         declare -g to_exit='yep'
     fi
-    if [[ "${to_upload}" == 'yep' ]]; then
+    if [[ "$to_upload" == 'yep' ]]; then
         printf '[info] uploading to the Internet Archive when finished\n'
     fi
-    if [[ "${to_exit}" == 'yep' ]]; then
+    if [[ "$to_exit" == 'yep' ]]; then
         printf '[error] required options are not defined, exiting\n'
         exit 1
     fi
@@ -129,23 +136,23 @@ check_commands () {
 }
 
 # archive from youtube
-if [[ "${method}" == 'youtube' ]]; then
+if [[ "$method" == 'youtube' ]]; then
     check_commands
-    if [[ "${ytdlp_exists}" != 'yep' ]]; then
+    if [[ "$ytdlp_exists" != 'yep' ]]; then
         printf '[error] yt-dlp is not installed\n'
         declare to_exit='yep'
     fi
-    if [[ "${ffmpeg_exists}" != 'yep' ]]; then
+    if [[ "$ffmpeg_exists" != 'yep' ]]; then
         printf '[error] ffmpeg is not installed\n'
         declare to_exit='yep'
     fi
-    if [[ "${to_exit}" == 'yep' ]]; then
+    if [[ "$to_exit" == 'yep' ]]; then
         printf '[error] required applications are not installed, exiting\n'
         exit 1
     fi
 
     # download raw data
-    printf '[info] downloading %s\n' "${source}"
+    printf '[info] downloading %s\n' "$source"
     until yt-dlp \
         --abort-on-unavailable-fragment \
         --allow-unplayable-formats \
