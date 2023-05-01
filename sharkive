@@ -172,95 +172,98 @@ if [[ "$method" == 'youtube' ]]; then
 
   # download raw data
   printf '[info] downloading %s\n' "$source"
-  until   yt-dlp \
-        --abort-on-unavailable-fragment \
-        --allow-unplayable-formats \
-        --concurrent-fragments 1 \
-        --dump-json \
-        --dump-pages \
-        --dump-single-json \
-        --extractor-args \
-         'youtube:player_client=all;include_incomplete_formats' \
-        --format all \
-        --geo-bypass \
-        --get-comments \
-        --ignore-config \
-        --ignore-no-formats-error \
-        --keep-fragments \
-        --keep-video \
-        --list-formats \
-        --list-subs \
-        --max-sleep-interval 0 \
-        --newline \
-        --no-audio-multistreams \
-        --no-call-home \
-        --no-check-formats \
-        --no-clean-info-json \
-        --no-config-locations \
-        --no-continue \
-        --no-cookies \
-        --no-cookies-from-browser \
-        --no-embed-chapters \
-        --no-embed-info-json \
-        --no-embed-metadata \
-        --no-embed-subs \
-        --no-embed-thumbnail \
-        --no-exec \
-        --no-force-keyframes-at-cuts \
-        --no-format-sort-force \
-        --no-include-ads \
-        --no-mark-watched \
-        --no-overwrites \
-        --no-playlist-reverse \
-        --no-post-overwrites \
-        --no-prefer-avconv \
-        --no-prefer-free-formats \
-        --no-remove-chapters \
-        --no-restrict-filenames \
-        --no-simulate \
-        --no-split-chapters \
-        --no-sponsorblock \
-        --no-sponskrub \
-        --no-sponskrub-cut \
-        --no-sponskrub-force \
-        --no-video-multistreams \
-        --no-windows-filenames \
-        --output \
-         "$HOME/.sharkive/dl/youtube/%(id)s/youtube-%(id)s.%(format_id)s.%(ext)s" \
-        --prefer-ffmpeg \
-        --print description \
-        --print duration_string \
-        --print filename \
-        --print format \
-        --print id \
-        --print thumbnail \
-        --print title \
-        --print urls \
-        --print-traffic \
-        --progress \
-        --sleep-interval 0 \
-        --sleep-requests 0 \
-        --sleep-subtitles 0 \
-        --sponsorblock-mark '-all' \
-        --sponsorblock-remove '-all' \
-        --sub-langs all \
-        --use-extractors youtube \
-        --verbose \
-        --write-all-thumbnails \
-        --write-annotations \
-        --write-auto-subs \
-        --write-description \
-        --write-desktop-link \
-        --write-info-json \
-        --write-pages \
-        --write-subs \
-        --write-thumbnail \
-        --write-url-link \
-        --write-webloc-link \
-        --youtube-include-dash-manifest \
-        --youtube-include-hls-manifest \
-        --youtube-print-sig-code \
-        -- "$source"
+  until yt-dlp \
+      --abort-on-unavailable-fragment \
+      --allow-unplayable-formats \
+      --concurrent-fragments 1 \
+      --dump-json \
+      --dump-pages \
+      --dump-single-json \
+      --extractor-args \
+       'youtube:player_client=all;include_incomplete_formats' \
+      --format all \
+      --geo-bypass \
+      --get-comments \
+      --ignore-config \
+      --ignore-no-formats-error \
+      --keep-fragments \
+      --keep-video \
+      --list-formats \
+      --list-subs \
+      --max-sleep-interval 0 \
+      --newline \
+      --no-audio-multistreams \
+      --no-call-home \
+      --no-check-formats \
+      --no-clean-info-json \
+      --no-config-locations \
+      --no-continue \
+      --no-cookies \
+      --no-cookies-from-browser \
+      --no-embed-chapters \
+      --no-embed-info-json \
+      --no-embed-metadata \
+      --no-embed-subs \
+      --no-embed-thumbnail \
+      --no-exec \
+      --no-force-keyframes-at-cuts \
+      --no-format-sort-force \
+      --no-include-ads \
+      --no-mark-watched \
+      --no-overwrites \
+      --no-playlist-reverse \
+      --no-post-overwrites \
+      --no-prefer-avconv \
+      --no-prefer-free-formats \
+      --no-remove-chapters \
+      --no-restrict-filenames \
+      --no-simulate \
+      --no-split-chapters \
+      --no-sponsorblock \
+      --no-sponskrub \
+      --no-sponskrub-cut \
+      --no-sponskrub-force \
+      --no-video-multistreams \
+      --no-windows-filenames \
+      --output \
+       "$HOME/.sharkive/dl/youtube/%(id)s/youtube-%(id)s.%(format_id)s.%(ext)s" \
+      --prefer-ffmpeg \
+      --print description \
+      --print duration_string \
+      --print filename \
+      --print format \
+      --print id \
+      --print thumbnail \
+      --print title \
+      --print urls \
+      --print-traffic \
+      --progress \
+      --sleep-interval 0 \
+      --sleep-requests 0 \
+      --sleep-subtitles 0 \
+      --sponsorblock-mark '-all' \
+      --sponsorblock-remove '-all' \
+      --sub-format vtt,srt,ass,json3,xml,best \
+      --sub-langs all \
+      --use-extractors youtube \
+      --verbose \
+      --write-all-thumbnails \
+      --write-annotations \
+      --write-auto-subs \
+      --write-description \
+      --write-desktop-link \
+      --write-info-json \
+      --write-pages \
+      --write-subs \
+      --write-thumbnail \
+      --write-url-link \
+      --write-webloc-link \
+      --youtube-include-dash-manifest \
+      --youtube-include-hls-manifest \
+      --youtube-print-sig-code \
+      -- "$source"
+      # for next yt-dlp release:
+      #   replace --geo-bypass with --xff default
   do printf '[info] ran into an error. going again\n'; done
 
   printf '\ndownload successful\n'
