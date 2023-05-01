@@ -10,12 +10,32 @@
 # sharkive is a bash script to download online content,
 # and optionally upload it to the Internet Archive [https://archive.org].
 
-# disable POSIX mode
-set +o posix
+# the following block should be POSIX shell compliant
+
+# if return succeeds, this script is being sourced (this doesn't work yet)
+#if { return 42 &> '/dev/null' || [ printf "$?" = 42 ]; }; then
+#    printf '[error] it appears that this script is being sourced.
+#please execute this script instead. exiting _2\n'
+#fi
+
+# check shell
+if [ -n "$BASH_VERSION" ]; then
+    if [ "$BASH_SOURCE" != "$0" ]; then
+        printf '[error] it appears that this script is being sourced.
+please execute this script instead. exiting\n'
+        return 1
+    fi
+fi
+#elif [ "$0" != 'bash' ]; then
+#    printf '[error] it appears that this script is not being run with bash.
+#please execute this script with bash instead. exiting\n'
+#fi
+
+# disable POSIX mode, plus some other stuff
+set -h +Bo posix
 unset POSIXLY_CORRECT
 
-# set some more shell attributes
-set -h +B
+# end POSIX compliant block
 
 # exit trap
 exit_trap () {
@@ -32,8 +52,9 @@ opts_invalid () {
 
 # short usage text
 usage_short () {
-    printf 'one of the options [-hm] must be used\n'
-    printf 'use ‘sharkive -h’ for detailed help\n'
+    printf 'one of the options [-hm] must be used
+use ‘sharkive -h’ for detailed help
+'
 }
 
 # usage text
@@ -50,8 +71,7 @@ options:
   -s  define download source (URI)
       (use multiple times for multiple sources)
   -u  upload to the Internet Archive
-      once download is finished
-'
+      once download is finished\n'
 }
 
 # unset variables that may not be re-set later
@@ -66,7 +86,7 @@ while getopts ':hm:s:u' opt; do
     case "$opt" in
     h) # help
         usage
-        exit 2
+        exit 1
         ;;
     m) # download method
         declare -l method="$OPTARG"
@@ -110,7 +130,7 @@ show_options () {
         printf '[info] uploading to the Internet Archive when finished\n'
     fi
     if [[ "$to_exit" == 'yep' ]]; then
-        printf '[error] required options are not defined, exiting\n'
+        printf '[error] required options are not defined. exiting\n'
         exit 1
     fi
 }
@@ -147,7 +167,7 @@ if [[ "$method" == 'youtube' ]]; then
         declare to_exit='yep'
     fi
     if [[ "$to_exit" == 'yep' ]]; then
-        printf '[error] required applications are not installed, exiting\n'
+        printf '[error] required applications are not installed. exiting\n'
         exit 1
     fi
 
@@ -162,7 +182,7 @@ if [[ "$method" == 'youtube' ]]; then
         --dump-single-json \
         --extractor-args \
          'youtube:player_client=all;include_incomplete_formats' \
-        --format 'all' \
+        --format all \
         --geo-bypass \
         --get-comments \
         --ignore-config \
@@ -207,16 +227,16 @@ if [[ "$method" == 'youtube' ]]; then
         --no-video-multistreams \
         --no-windows-filenames \
         --output \
-         "${HOME}/.sharkive/dl/youtube/%(id)s/youtube-%(id)s.%(format_id)s.%(ext)s" \
+         "$HOME/.sharkive/dl/youtube/%(id)s/youtube-%(id)s.%(format_id)s.%(ext)s" \
         --prefer-ffmpeg \
-        --print 'description' \
-        --print 'duration_string' \
-        --print 'filename' \
-        --print 'format' \
-        --print 'id' \
-        --print 'thumbnail' \
-        --print 'title' \
-        --print 'urls' \
+        --print description \
+        --print duration_string \
+        --print filename \
+        --print format \
+        --print id \
+        --print thumbnail \
+        --print title \
+        --print urls \
         --print-traffic \
         --progress \
         --sleep-interval 0 \
@@ -224,8 +244,8 @@ if [[ "$method" == 'youtube' ]]; then
         --sleep-subtitles 0 \
         --sponsorblock-mark '-all' \
         --sponsorblock-remove '-all' \
-        --sub-langs 'all' \
-        --use-extractors 'youtube' \
+        --sub-langs all \
+        --use-extractors youtube \
         --verbose \
         --write-all-thumbnails \
         --write-annotations \
@@ -241,8 +261,8 @@ if [[ "$method" == 'youtube' ]]; then
         --youtube-include-dash-manifest \
         --youtube-include-hls-manifest \
         --youtube-print-sig-code \
-        -- "${source}"
-    do printf '[info] ran into an error, going again\n'; done
+        -- "$source"
+    do printf '[info] ran into an error. going again\n'; done
 
     printf '\ndownload successful\n'
 fi
