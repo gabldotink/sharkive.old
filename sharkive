@@ -20,14 +20,14 @@
 
 # check shell
 if [ -n "$BASH_VERSION" ]; then
-    if [ "$BASH_SOURCE" != "$0" ]; then
-        printf '[error] it appears that this script is being sourced.
+  if [ "$BASH_SOURCE" != "$0" ]; then
+    printf '[error] it appears that this script is being sourced.
 please execute this script instead. exiting\n'
-        return 1
-    fi
+    return 1
+  fi
 fi
 #elif [ "$0" != 'bash' ]; then
-#    printf '[error] it appears that this script is not being run with bash.
+#  printf '[error] it appears that this script is not being run with bash.
 #please execute this script with bash instead. exiting\n'
 #fi
 
@@ -39,27 +39,26 @@ unset POSIXLY_CORRECT
 
 # exit trap
 exit_trap () {
-    printf '[error] SIGINT received, ending\n'
-    exit 1
+  printf '[error] SIGINT received, ending\n'
+  exit 1
 }
 
 trap 'exit_trap' INT
 
 # invalid options message
 opts_invalid () {
-    printf 'invalid options given\n'
+  printf 'invalid options given\n'
 }
 
 # short usage text
 usage_short () {
-    printf 'one of the options [-hm] must be used
-use ‘sharkive -h’ for detailed help
-'
+  printf 'one of the options [-hm] must be used
+use ‘sharkive -h’ for detailed help\n'
 }
 
 # usage text
 usage () {
-printf '
+  printf '
 usage: sharkive [-h] [-m method -s source] [-u]
 
 you’re using sharkive; a bash script to download online content,
@@ -83,97 +82,97 @@ unset opts_present
 
 # get options
 while getopts ':hm:s:u' opt; do
-    case "$opt" in
-    h) # help
-        usage
-        exit 1
-        ;;
-    m) # download method
-        declare -l method="$OPTARG"
-        ;;
-    s) # download source
-        declare source="$OPTARG"
-        ;;
-    u) # upload
-        declare to_upload='yep'
-        ;;
-    *) # invalid options
-        opts_invalid
-        usage_short
-        exit 1
-        ;;
-    esac
-    declare opts_present='yep'
+  case "$opt" in
+  h) # help
+    usage
+    exit 1
+    ;;
+  m) # download method
+    declare -l method="$OPTARG"
+    ;;
+  s) # download source
+    declare source="$OPTARG"
+    ;;
+  u) # upload
+    declare to_upload='yep'
+    ;;
+  *) # invalid options
+    opts_invalid
+    usage_short
+    exit 1
+    ;;
+  esac
+  opts_present='yep'
 done
 
 # show short usage if no options are given (this is a very insightful comment)
 if [[ "$opts_present" != 'yep' ]]; then
-    usage_short
-    exit 1
+  usage_short
+  exit 1
 fi
 
 # show user-declared options
 show_options () {
-    if [[ -n "$method" ]]; then
-        printf '[info] using method %s\n' "$method"
-    else
-        printf '[error] no method defined\n'
-        declare -g to_exit='yep'
-    fi
-    if [[ -n "$source" ]]; then
-        printf '[info] using source %s\n' "$source"
-    else
-        printf '[error] no source defined\n'
-        declare -g to_exit='yep'
-    fi
-    if [[ "$to_upload" == 'yep' ]]; then
-        printf '[info] uploading to the Internet Archive when finished\n'
-    fi
-    if [[ "$to_exit" == 'yep' ]]; then
-        printf '[error] required options are not defined. exiting\n'
-        exit 1
-    fi
+  if [[ -n "$method" ]]; then
+    printf '[info] using method %s\n' "$method"
+  else
+    printf '[error] no method defined\n'
+    declare -g to_exit='yep'
+  fi
+  if [[ -n "$source" ]]; then
+    printf '[info] using source %s\n' "$source"
+  else
+    printf '[error] no source defined\n'
+    declare -g to_exit='yep'
+  fi
+  if [[ "$to_upload" == 'yep' ]]; then
+    printf '[info] uploading to the Internet Archive when finished\n'
+  fi
+  if [[ "$to_exit" == 'yep' ]]; then
+    printf '[error] required options are not defined. exiting\n'
+    exit 1
+  fi
 }
 
 show_options
 
 # check if programs are installed
 check_commands () {
-    #if command -v ia &> '/dev/null'; then
+  #if command -v ia &> '/dev/null'; then
     #declare -g ia_exists='yep'; fi
-    #if command -v ytarchive &> '/dev/null'; then
+  #if command -v ytarchive &> '/dev/null'; then
     #declare -g ytarchive_exists='yep'; fi
-    #if command -v youtube-dl &> '/dev/null'; then
+  #if command -v youtube-dl &> '/dev/null'; then
     #declare -g ytdl_exists='yep'; fi
-    if command -v yt-dlp &> '/dev/null'; then
+  if command -v yt-dlp &> '/dev/null'; then
     declare -g ytdlp_exists='yep'; fi
-    #if command -v you-get &> '/dev/null'; then
+  #if command -v you-get &> '/dev/null'; then
     #declare -g youget_exists='yep'; fi
-    if command -v ffmpeg &> '/dev/null'; then
+  if command -v ffmpeg &> '/dev/null'; then
     declare -g ffmpeg_exists='yep'; fi
-    if command -v ffprobe &> '/dev/null'; then
+  if command -v ffprobe &> '/dev/null'; then
     declare -g ffprobe_exists='yep'; fi
 }
 
 # archive from youtube
 if [[ "$method" == 'youtube' ]]; then
-    check_commands
-    if [[ "$ytdlp_exists" != 'yep' ]]; then
-        printf '[error] yt-dlp is not installed\n'
-        declare to_exit='yep'
-    fi
-    if [[ "$ffmpeg_exists" != 'yep' ]]; then
-        printf '[error] ffmpeg is not installed\n'
-        declare to_exit='yep'
-    fi
-    if [[ "$to_exit" == 'yep' ]]; then
-        printf '[error] required applications are not installed. exiting\n'
-        exit 1
-    fi
+  check_commands
+  if [[ "$ytdlp_exists" != 'yep' ]]; then
+    printf '[error] yt-dlp is not installed\n'
+    declare to_exit='yep'
+  fi
+  if [[ "$ffmpeg_exists" != 'yep' ]]; then
+    printf '[error] ffmpeg is not installed\n'
+    declare to_exit='yep'
+  fi
+  if [[ "$to_exit" == 'yep' ]]; then
+    printf '[error] required applications are not installed. exiting\n'
+    exit 1
+  fi
 
-    # download raw data
-    printf '[info] downloading %s\n' "$source"
-    until yt-dlp \
+  # download raw data
+  printf '[info] downloading %s\n' "$source"
+  until   yt-dlp \
         --abort-on-unavailable-fragment \
         --allow-unplayable-formats \
         --concurrent-fragments 1 \
@@ -262,7 +261,7 @@ if [[ "$method" == 'youtube' ]]; then
         --youtube-include-hls-manifest \
         --youtube-print-sig-code \
         -- "$source"
-    do printf '[info] ran into an error. going again\n'; done
+  do printf '[info] ran into an error. going again\n'; done
 
-    printf '\ndownload successful\n'
+  printf '\ndownload successful\n'
 fi
