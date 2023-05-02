@@ -243,7 +243,7 @@ if [[ "$method" == 'youtube' ]]; then
       --sleep-subtitles 0 \
       --sponsorblock-mark '-all' \
       --sponsorblock-remove '-all' \
-      --sub-format vtt,srt,ass,json3,xml,best \
+      --sub-format ass,json3,lrc,vtt,srt,srv1,srv2,srv3,ttml,best \
       --sub-langs all \
       --use-extractors youtube \
       --verbose \
