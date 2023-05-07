@@ -20,7 +20,7 @@
 
 unset HISTFILE
 
-# check shell
+# check if script is being sourced (bash-only, other shells will simply skip this)
 if [ -n "$BASH_VERSION" ]; then
   if [ "$BASH_SOURCE" != "$0" ]; then
     printf '[error] it appears that this script is being sourced.
