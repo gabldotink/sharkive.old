@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # sharkive [https://github.com/gabldotink/sharkive/]
-# CC0 Public Domain [https://creativecommons.org/publicdomain/zero/1.0/]
+# SPDX-License-Identifier: CC0-1.0
 #
 # this is the *nix version, for Unix and Unix-like systems such as
 # Linux; MacOS; Cygwin; Termux; BSD; or, like, Solaris or something.
@@ -17,6 +17,8 @@
 #    printf '[error] it appears that this script is being sourced.
 #please execute this script instead. exiting _2\n'
 #fi
+
+unset HISTFILE
 
 # check shell
 if [ -n "$BASH_VERSION" ]; then
@@ -36,6 +38,15 @@ set -h +Bo posix
 unset POSIXLY_CORRECT
 
 # end POSIX compliant block
+
+shopt -u autocd
+shopt -u cdable_vars
+shopt -u cdspell
+shopt -u cmdhist
+shopt -u dirspell
+shopt -u extglob
+shopt -u globstar
+shopt -u histappend
 
 # exit trap
 exit_trap () {
@@ -66,9 +77,9 @@ and optionally upload it to the Internet Archive.
 
 options:
   -h  print this help message
+  -?  print this help message
   -m  define “method” for downloading
   -s  define download source (URI)
-      (use multiple times for multiple sources)
   -u  upload to the Internet Archive
       once download is finished\n'
 }
@@ -83,18 +94,18 @@ unset opts_present
 # get options
 while getopts ':hm:s:u' opt; do
   case "$opt" in
-  h) # help
+  h|\?) # help
     usage
     exit 1
     ;;
   m) # download method
-    declare -l method="$OPTARG"
+    declare -xl method="$OPTARG"
     ;;
   s) # download source
-    source="$OPTARG"
+    export source="$OPTARG"
     ;;
   u) # upload
-    to_upload='yep'
+    export to_upload='yep'
     ;;
   *) # invalid options
     opts_invalid
@@ -117,13 +128,13 @@ show_options () {
     printf '[info] using method %s\n' "$method"
   else
     printf '[error] no method defined\n'
-    to_exit='yep'
+    local to_exit='yep'
   fi
   if [[ -n "$source" ]]; then
     printf '[info] using source %s\n' "$source"
   else
     printf '[error] no source defined\n'
-    to_exit='yep'
+    local to_exit='yep'
   fi
   if [[ "$to_upload" == 'yep' ]]; then
     printf '[info] uploading to the Internet Archive when finished\n'
@@ -139,33 +150,37 @@ show_options
 # check if programs are installed
 check_commands () {
   #if command -v ia &> '/dev/null'; then
-    #declare -g ia_exists='yep'; fi
+    #export ia_exists='yep'; fi
   #if command -v ytarchive &> '/dev/null'; then
-    #declare -g ytarchive_exists='yep'; fi
+    #export ytarchive_exists='yep'; fi
   #if command -v youtube-dl &> '/dev/null'; then
-    #declare -g ytdl_exists='yep'; fi
+    #export ytdl_exists='yep'; fi
   if command -v yt-dlp &> '/dev/null'; then
-    declare -g ytdlp_exists='yep'; fi
+    export ytdlp_exists='yep'; fi
   #if command -v you-get &> '/dev/null'; then
-    #declare -g youget_exists='yep'; fi
+    #export youget_exists='yep'; fi
   if command -v ffmpeg &> '/dev/null'; then
-    declare -g ffmpeg_exists='yep'; fi
+    export ffmpeg_exists='yep'; fi
   if command -v ffprobe &> '/dev/null'; then
-    declare -g ffprobe_exists='yep'; fi
+    export ffprobe_exists='yep'; fi
 }
 
-dl_dir="$HOME/.sharkive/dl"
+export dl_dir="$HOME/.sharkive/dl"
 
 # archive from youtube
 if [[ "$method" == 'youtube' ]]; then
   check_commands
   if [[ "$ytdlp_exists" != 'yep' ]]; then
     printf '[error] yt-dlp is not installed\n'
-    to_exit='yep'
+    local to_exit='yep'
   fi
   if [[ "$ffmpeg_exists" != 'yep' ]]; then
     printf '[error] ffmpeg is not installed\n'
-    to_exit='yep'
+    local to_exit='yep'
+  fi
+  if [[ "$ffprobe_exists" != 'yep' ]]; then
+    printf '[error] ffprobe is not installed\n'
+    local to_exit='yep'
   fi
   if [[ "$to_exit" == 'yep' ]]; then
     printf '[error] required applications are not installed. exiting\n'
