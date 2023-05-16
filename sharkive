@@ -15,7 +15,8 @@
 # if return succeeds, this script is being sourced (this doesn't work yet)
 #if { return 42 &> '/dev/null' || [ printf "$?" = 42 ]; }; then
 #    printf '[error] it appears that this script is being sourced.
-#please execute this script instead. exiting _2\n'
+#please execute this script instead. exiting\n'
+#    return 1
 #fi
 
 unset HISTFILE
@@ -31,6 +32,7 @@ fi
 #elif [ "$0" != 'bash' ]; then
 #  printf '[error] it appears that this script is not being run with bash.
 #please execute this script with bash instead. exiting\n'
+#  exit 1
 #fi
 
 # disable POSIX mode, plus some other stuff
@@ -107,6 +109,12 @@ while getopts ':hm:s:u' opt; do
   u) # upload
     export to_upload='yep'
     ;;
+#  -) # trying to use GNU options, not used
+#    printf '[info] note: this script does not support long/GNU-style options\n'
+#    opts_invalid
+#    usage_short
+#    exit 1
+#    ;;
   *) # invalid options
     opts_invalid
     usage_short
