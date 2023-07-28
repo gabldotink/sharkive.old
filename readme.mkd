@@ -7,3 +7,5 @@ SPDX-License-Identifier: CC0-1.0
 
 `sharkive` is a `bash` script to make it easier to contribute to the
 [Internet Archive](https://archive.org/).
+
+### notice: this repository is now archived, and the project is being started over.
